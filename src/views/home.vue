@@ -14,7 +14,7 @@
 <script setup>
 import BlogList from '@/components/home/BlogList.vue'
 </script>
-<style>
+<style scope>
 body {
     background-color: #f2f3f5;
 }

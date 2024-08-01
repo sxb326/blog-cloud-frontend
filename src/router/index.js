@@ -9,7 +9,8 @@ export const constantRoutes = [
         redirect: '/home',
         children: [
             {path: '/home', component: () => import('@/views/home.vue')},
-            {path: '/preview/:id', component: () => import("@/views/preview.vue"), meta: {title: '看文章'}}
+            {path: '/preview/:id', component: () => import("@/views/preview.vue"), meta: {title: '看文章'}},
+            {path: '/search/:keyword', component: () => import("@/views/search.vue"), meta: {title: '检索'}}
         ]
     },
     {path: '/editor', component: () => import("@/views/editor.vue"), meta: {title: '写文章', needLogin: true}},
