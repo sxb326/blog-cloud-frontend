@@ -1,23 +1,25 @@
 <template>
-    <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}条</div>
-    <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
-        infinite-scroll-immediate="false" v-loading="loading">
-        <div class="blog" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
-            <div style="width: 100%">
-                <h3 v-html="item.title"></h3>
-                <p class="blog-summary">{{ item.summary }}</p>
-                <div class="blog-stats">
-                    <div class="blog-stat-item">
-                        <span class="author">{{ item.authorName }}</span>
+    <div v-loading="loading">
+        <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}条</div>
+        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
+            infinite-scroll-immediate="false">
+            <div class="blog" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
+                <div style="width: 100%">
+                    <h3 v-html="item.title"></h3>
+                    <p class="blog-summary">{{ item.summary }}</p>
+                    <div class="blog-stats">
+                        <div class="blog-stat-item">
+                            <span class="author">{{ item.authorName }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="coverDiv" v-if="item.picUid !== null">
-                <img :src="imgUrl + item.picUid" style="width:120px;height:120px" />
+                <div class="coverDiv" v-if="item.picUid !== null">
+                    <img :src="imgUrl + item.picUid" style="width:120px;height:120px" />
+                </div>
             </div>
         </div>
+        <el-empty v-else description="没有结果" />
     </div>
-    <el-empty v-else description="没有结果" />
 </template>
 
 <script setup>

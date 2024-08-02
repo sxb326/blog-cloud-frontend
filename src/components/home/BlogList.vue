@@ -28,6 +28,9 @@
                             </el-icon></span>
                         <span>{{ item.collectCount }}</span>
                     </div>
+                    <div class="blog-stat-item">
+                        标签部分
+                    </div>
                 </div>
             </div>
             <div class="coverDiv" v-if="item.picUid !== null">
@@ -108,6 +111,10 @@ const preview = (id) => {
 
 .blog-stat-item span:first-child {
     margin-right: 5px;
+}
+
+.blog-stat-item:last-child {
+    margin-left: auto;
 }
 
 .stat-icon {
