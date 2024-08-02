@@ -10,58 +10,32 @@
           <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
-          <el-input
-            v-model="keyWord"
-            style="width: 240px"
-            placeholder="想搜索点什么呢"
-          >
+          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
             <template #suffix>
-              <el-icon
-                class="el-input__icon"
-                style="cursor: pointer"
-                @click="doSearch"
-              >
+              <el-icon class="el-input__icon" style="cursor: pointer" @click="doSearch">
                 <search />
               </el-icon>
             </template>
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button
-            v-if="isUserEmpty(user)"
-            type="primary"
-            plain
-            @click="openLoginForm"
-            >登录/注册
+          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册
           </el-button>
           <div v-else class="centered-container">
-            <el-button
-              type="primary"
-              :icon="Edit"
-              class="centered-item"
-              @click="openEditor"
-              >写作
+            <el-button type="primary" :icon="Edit" class="centered-item" @click="openEditor">写作
             </el-button>
             <el-icon size="30" class="centered-item">
               <BellFilled />
             </el-icon>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar
-                  :size="40"
-                  :src="pictureUrl + user.picUid"
-                  class="centered-item avatar"
-                />
+                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="12">
-                      <el-avatar
-                        :size="40"
-                        :src="pictureUrl + user.picUid"
-                        class="centered-item avatar"
-                      />
+                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="12">
                       {{ user.nickName }}
@@ -90,7 +64,7 @@ import { Edit, Search } from "@element-plus/icons-vue";
 import { getCurrentInstance, onMounted, reactive, ref } from "vue";
 import { localStorage } from "@/utils/storage";
 import request from "@/utils/request.js";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 const { proxy } = getCurrentInstance();
 
@@ -131,11 +105,23 @@ const openLoginForm = () => {
 // 搜索
 let keyWord = ref("");
 
-const router = useRouter();
+const route = useRoute();
+
+onMounted(() => {
+  //检查检索关键字
+  if (route.params.keyword) {
+    keyWord.value = route.params.keyword
+  }
+})
 
 function doSearch() {
   if (keyWord.value) {
-    router.replace("/search/" + keyWord.value);
+    window.open(window.location.origin + '/#/search/' + keyWord.value)
+  } else {
+    ElMessage({
+      message: '检索关键字不能为空',
+      type: 'warning',
+    });
   }
 }
 

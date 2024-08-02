@@ -2,28 +2,17 @@
   <el-container>
     <el-aside width="200px" class="search-aside left"></el-aside>
     <el-main class="search-main">
-        {{ list }}
+      <SearchList :keyword="keyword"></SearchList>
     </el-main>
     <el-aside width="200px" class="search-aside right"></el-aside>
   </el-container>
 </template>
 <script setup>
-import request from '@/utils/request.js'
-import { onMounted, ref } from 'vue';
-import {useRoute} from 'vue-router';
+import { useRoute } from 'vue-router';
+import SearchList from "@/components/search/SearchList.vue";
 
 const route = useRoute();
-
-let list = ref([])
-
-onMounted(()=>{
-    let keyword = route.params.keyword;
-    request.get('/search/blog/search?keyword='+keyword).then(result=>{
-        list.value = result.data
-    })
-
-})
-
+const keyword = route.params.keyword;
 
 </script>
 <style scope>
