@@ -63,7 +63,7 @@ let loading = ref(false)
 //检索数据
 const getList = () => {
     loading.value = true
-    request.get('/search/blog/search', {
+    request.get('/search', {
         params: { keyword: props.keyword, page: page.value }
     }).then(result => {
         total.value = result.data.total
