@@ -51,6 +51,9 @@ const getList = () => {
     request.get('/web/home/list/' + page.value).then(result => {
         list.value.push(...result.data)
         loading.value = false
+        if (result.data.length === 0) {
+            page.value--
+        }
     })
 }
 

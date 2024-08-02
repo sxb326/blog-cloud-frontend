@@ -30,7 +30,6 @@ body {
   height: calc(100vh - 100px);
   flex: 1;
   padding: 0;
-  background-color: #fff;
 }
 
 .search-aside {

@@ -1,5 +1,6 @@
 <template>
-    <div v-if="total > 0" class="blogList" v-infinite-scroll="load" infinite-scroll-distance="10"
+    <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}条</div>
+    <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
         infinite-scroll-immediate="false" v-loading="loading">
         <div class="blog" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
             <div style="width: 100%">
@@ -68,6 +69,9 @@ const getList = () => {
         total.value = result.data.total
         list.value.push(...result.data.list)
         loading.value = false
+        if (result.data.list.length === 0) {
+            page.value--
+        }
     })
 }
 
@@ -81,10 +85,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.blogList {
+.total {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.list {
     overflow: auto;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 180px);
     padding: 10px 5px;
+    background-color: #fff;
 }
 
 .blog {
