@@ -29,7 +29,7 @@
                         <span>{{ item.collectCount }}</span>
                     </div>
                     <div class="blog-stat-item">
-                        标签部分
+                        <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
                     </div>
                 </div>
             </div>
