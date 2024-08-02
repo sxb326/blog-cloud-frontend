@@ -10,25 +10,6 @@
                     <div class="blog-stat-item">
                         <span class="author">{{ item.authorName }}</span>
                     </div>
-                    <div class="blog-stat-item">|</div>
-                    <div class="blog-stat-item">
-                        <span><el-icon class="stat-icon">
-                                <View />
-                            </el-icon></span>
-                        <span>{{ item.clickCount }}</span>
-                    </div>
-                    <div class="blog-stat-item">
-                        <span><el-icon class="stat-icon">
-                                <Pointer />
-                            </el-icon></span>
-                        <span>{{ item.likeCount }}</span>
-                    </div>
-                    <div class="blog-stat-item">
-                        <span><el-icon class="stat-icon">
-                                <Star />
-                            </el-icon></span>
-                        <span>{{ item.collectCount }}</span>
-                    </div>
                 </div>
             </div>
             <div class="coverDiv" v-if="item.picUid !== null">
