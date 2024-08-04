@@ -152,6 +152,7 @@ body {
   display: flex;
   margin: 0 0.5rem;
   padding: 10px;
+  border-bottom: 1px solid #edeeef;
 }
 
 .blog:hover {

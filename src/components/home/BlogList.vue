@@ -113,6 +113,9 @@ const preview = (id) => {
 .el-tabs__header {
   margin: 0 !important;
 }
+</style>
+
+<style scoped>
 .tabDiv {
   padding: 5px 0 0 5px;
 }
