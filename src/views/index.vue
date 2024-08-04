@@ -10,32 +10,69 @@
           <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
-          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
-            <template #suffix>
-              <el-icon class="el-input__icon" style="cursor: pointer" @click="doSearch">
-                <search />
-              </el-icon>
+          <el-input
+            v-model="keyWord"
+            style="width: 240px"
+            placeholder="想搜索点什么呢"
+          >
+            <template #append>
+              <el-button :icon="Search" @click="doSearch" />
             </template>
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册
+          <el-button
+            v-if="isUserEmpty(user)"
+            type="primary"
+            plain
+            @click="openLoginForm"
+            >登录/注册
           </el-button>
           <div v-else class="centered-container">
-            <el-button type="primary" :icon="Edit" class="centered-item" @click="openEditor">写作
-            </el-button>
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                <el-button
+                  type="primary"
+                  :icon="Edit"
+                  class="centered-item creation"
+                  >创作</el-button
+                >
+              </span>
+              <template #dropdown>
+                <el-card class="creationCard">
+                  <el-button
+                    type="success"
+                    size="large"
+                    :icon="Edit"
+                    @click="openEditor"
+                    >写文章</el-button
+                  >
+                  <el-button type="warning" size="large" :icon="Edit"
+                    >草稿箱</el-button
+                  >
+                </el-card>
+              </template>
+            </el-dropdown>
             <el-icon size="30" class="centered-item">
               <BellFilled />
             </el-icon>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                <el-avatar
+                  :size="40"
+                  :src="pictureUrl + user.picUid"
+                  class="centered-item avatar"
+                />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="12">
-                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                      <el-avatar
+                        :size="40"
+                        :src="pictureUrl + user.picUid"
+                        class="centered-item avatar"
+                      />
                     </el-col>
                     <el-col :span="12">
                       {{ user.nickName }}
@@ -64,7 +101,7 @@ import { Edit, Search } from "@element-plus/icons-vue";
 import { getCurrentInstance, onMounted, reactive, ref } from "vue";
 import { localStorage } from "@/utils/storage";
 import request from "@/utils/request.js";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const { proxy } = getCurrentInstance();
 
@@ -106,21 +143,27 @@ const openLoginForm = () => {
 let keyWord = ref("");
 
 const route = useRoute();
+const router = useRouter();
 
 onMounted(() => {
   //检查检索关键字
   if (route.params.keyword) {
-    keyWord.value = route.params.keyword
+    keyWord.value = route.params.keyword;
   }
-})
+});
 
 function doSearch() {
   if (keyWord.value) {
-    window.open(window.location.origin + '/#/search/' + keyWord.value)
+    let path = route.path;
+    if (path.startsWith("/search")) {
+      router.push("/search/" + keyWord.value);
+    } else {
+      window.open(window.location.origin + "/#/search/" + keyWord.value);
+    }
   } else {
     ElMessage({
-      message: '检索关键字不能为空',
-      type: 'warning',
+      message: "检索关键字不能为空",
+      type: "warning",
     });
   }
 }
@@ -220,8 +263,16 @@ a {
   cursor: pointer;
 }
 
-.centered-container :last-child {
+.centered-item :last-of-type {
   margin-right: 0;
+}
+
+.creation {
+  margin-right: 25px;
+}
+
+.creationCard {
+  display: flex;
 }
 
 .userCard {
