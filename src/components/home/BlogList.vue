@@ -3,16 +3,28 @@
     <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
     <el-tab-pane label="最新" name="newest"></el-tab-pane>
   </el-tabs>
-  <div class="blogList" v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false"
-    v-loading="loading">
-    <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
+  <div
+    class="blogList"
+    v-infinite-scroll="load"
+    infinite-scroll-distance="10"
+    infinite-scroll-immediate="false"
+    v-loading="loading"
+  >
+    <div
+      class="blog-background"
+      v-for="item in list"
+      :key="item.uid"
+      @click="preview(item.uid)"
+    >
       <div class="blog">
         <div class="blog-info">
           <div class="blog-title">{{ item.title }}</div>
           <p class="blog-summary">{{ item.summary }}</p>
           <div class="blog-stats">
             <div class="blog-stat-item">
-              <el-text type="info" class="author">{{ item.authorName }}</el-text>
+              <el-text type="info" class="author">{{
+                item.authorName
+              }}</el-text>
             </div>
             <div class="blog-stat-item">
               <el-text type="info">
@@ -39,7 +51,9 @@
               </el-text>
             </div>
             <div class="blog-stat-item">
-              <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
+              <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{
+                tag
+              }}</el-tag>
             </div>
           </div>
         </div>
@@ -60,6 +74,7 @@ const imgUrl = import.meta.env.VITE_IMG_URL;
 let list = ref([]);
 let loading = ref(false);
 
+let category = ref("");
 let orderType = ref("recommend");
 
 //页面变更回调
@@ -74,7 +89,11 @@ const getList = () => {
   loading.value = true;
   request
     .get("/web/home/list", {
-      params: { page: page.value, orderType: orderType.value },
+      params: {
+        page: page.value,
+        categoryUid: category.value,
+        orderType: orderType.value,
+      },
     })
     .then((result) => {
       list.value.push(...result.data);
@@ -97,6 +116,16 @@ onMounted(getList);
 const preview = (id) => {
   window.open(window.location.origin + "/#/preview/" + id);
 };
+
+const refreshBlogListByCategoryUid = (categoryUid) => {
+  category.value = categoryUid;
+  orderType.value = "recommend";
+  page.value = 1;
+  list.value = [];
+  getList();
+};
+
+defineExpose({ refreshBlogListByCategoryUid });
 </script>
 
 <style>
@@ -156,7 +185,7 @@ const preview = (id) => {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
-  color: #8A919F;
+  color: #8a919f;
 }
 
 .blog-stats {
@@ -188,7 +217,8 @@ const preview = (id) => {
   height: auto;
 }
 
-.author {}
+.author {
+}
 
 .author:hover {
   color: #409eff;
