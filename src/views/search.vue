@@ -6,35 +6,25 @@
         <div class="total">
           查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇
         </div>
-        <div
-          v-if="total > 0"
-          class="list"
-          v-infinite-scroll="load"
-          infinite-scroll-distance="10"
-          infinite-scroll-immediate="false"
-        >
-          <div
-            class="blog"
-            v-for="item in list"
-            :key="item.uid"
-            @click="preview(item.uid)"
-          >
-            <div style="width: 100%">
-              <h3 v-html="item.title"></h3>
-              <p class="blog-summary">{{ item.summary }}</p>
-              <div class="blog-stats">
-                <div class="blog-stat-item">
-                  <span class="author">{{ item.authorName }}</span>
+        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
+          infinite-scroll-immediate="false">
+          <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
+            <div class="blog">
+              <div class="blog-info">
+                <div class="blog-title" v-html="item.title"></div>
+                <p class="blog-summary">{{ item.summary }}</p>
+                <div class="blog-stats">
+                  <div class="blog-stat-item">
+                    <el-text type="info" class="author">{{ item.authorName }}</el-text>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="coverDiv" v-if="item.picUid !== null">
-              <img
-                :src="imgUrl + item.picUid"
-                style="width: 120px; height: 120px"
-              />
+              <div class="coverDiv" v-if="item.picUid !== null">
+                <img :src="imgUrl + item.picUid" style="width: 120px; height: 80px" />
+              </div>
             </div>
           </div>
+
         </div>
         <el-empty v-else description="没有结果" />
       </div>
@@ -43,9 +33,9 @@
   </el-container>
 </template>
 <script setup>
-import { ref, watch } from "vue";
+import { ref, onMounted } from "vue";
 import request from "@/utils/request.js";
-import { useRoute } from "vue-router";
+import { onBeforeRouteUpdate, useRoute } from "vue-router";
 
 const imgUrl = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
@@ -91,14 +81,14 @@ const search = () => {
 };
 
 //监听路由变化
-watch(
-  route,
-  (route) => {
-    keyword = route.params.keyword;
-    search();
-  },
-  { immediate: true }
-);
+onBeforeRouteUpdate((route) => {
+  keyword = route.params.keyword;
+  search();
+})
+
+onMounted(() => {
+  search()
+})
 </script>
 <style scope>
 body {
@@ -155,13 +145,31 @@ body {
   border-bottom: 1px solid #edeeef;
 }
 
-.blog:hover {
+.blog-background:hover {
   background-color: #f2f3f5;
 }
 
+.blog-info {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-title {
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .blog-summary {
-  font-size: 12px;
-  color: lightgray;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #8A919F;
 }
 
 .blog-stats {
@@ -188,8 +196,7 @@ body {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.author {
-}
+.author {}
 
 .author:hover {
   color: #409eff;

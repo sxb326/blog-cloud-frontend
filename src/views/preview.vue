@@ -3,24 +3,24 @@
         <el-aside width="150px" class="aside-container left">
             <el-badge :value="blog.likeCount" :max="999">
                 <div class="leftBtn" @click="debounceLike(blog.liked)"
-                     :style="{background: blog.liked ? '#409eff' : 'white',color: blog.liked ? 'white' : 'black'}">
+                    :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
                     <el-icon size="20">
-                        <Pointer/>
+                        <Pointer />
                     </el-icon>
                 </div>
             </el-badge>
             <el-badge :value="blog.commentCount" :max="999">
                 <div class="leftBtn" @click="openComment(blog.uid)">
                     <el-icon size="20">
-                        <ChatLineRound/>
+                        <ChatLineRound />
                     </el-icon>
                 </div>
             </el-badge>
             <el-badge :value="blog.collectCount" :max="999">
                 <div class="leftBtn" @click="debounceCollect(blog.uid)"
-                     :style="{background: blog.collected ? '#409eff' : 'white',color: blog.collected ? 'white' : 'black'}">
+                    :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
                     <el-icon size="20">
-                        <Star/>
+                        <Star />
                     </el-icon>
                 </div>
             </el-badge>
@@ -30,12 +30,18 @@
                 <h1 style="font-size: 2.1em">{{ blog.title }}</h1>
                 <div class="blog-stats">
                     <div class="blog-stat-item">
-                        <span class="author">{{ blog.authorName }}</span>
+                        <el-text type="info" class="author"> {{ blog.authorName }}</el-text>
                     </div>
-                    <div class="blog-stat-item">{{ blog.createTime }}</div>
                     <div class="blog-stat-item">
-                        <span><el-icon class="stat-icon"><View/></el-icon></span>
-                        <span>{{ blog.clickCount }}</span>
+                        <el-text type="info"> {{ blog.createTime }}</el-text>
+                    </div>
+                    <div class="blog-stat-item">
+                        <el-text type="info">
+                            <el-icon>
+                                <View />
+                            </el-icon>
+                            {{ blog.clickCount }}
+                        </el-text>
                     </div>
                     <el-button v-if="blog.isAuthor" type="primary" text @click="edit">编辑</el-button>
                 </div>
@@ -45,16 +51,16 @@
         <el-aside width="300px" class="aside-container right">
             <div class="authorDiv">
                 <div class="authorInfo">
-                    <el-avatar :size="45" :src="pictureUrl + author.picUid" class="centered-item avatar"/>
+                    <el-avatar :size="45" :src="pictureUrl + author.picUid" class="centered-item avatar" />
                     <div class="authorNickName">{{ author.nickName }}</div>
                 </div>
             </div>
             <div class="directoryDiv" ref="directoryRef">
-                <div v-for="anchor in titles" :key="anchor"
-                     @click="directoryClick(anchor)" :id="anchor.id" class="directory-div"
-                     :style="{'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none'}">
+                <div v-for="anchor in titles" :key="anchor" @click="directoryClick(anchor)" :id="anchor.id"
+                    class="directory-div"
+                    :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }">
                     <div class="directory-item"
-                         :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`,color: directoryId === anchor.id ? '#409eff' : 'black'}">
+                        :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
                         {{ anchor.title }}
                     </div>
                 </div>
@@ -65,11 +71,11 @@
     </el-container>
 </template>
 <script setup>
-import {nextTick, onMounted, reactive, ref} from "vue";
+import { nextTick, onMounted, reactive, ref } from "vue";
 import request from '@/utils/request.js'
-import {useRoute, useRouter} from 'vue-router';
-import {ElMessage} from "element-plus";
-import {debounce} from "@/utils/debounce.js";
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage } from "element-plus";
+import { debounce } from "@/utils/debounce.js";
 import CommentList from '@/components/comment/CommentList.vue'
 import FavoriteForm from "@/components/favorite/FavoriteForm.vue";
 
@@ -134,7 +140,7 @@ let directoryId = ref('')
 
 //目录点击事件
 const directoryClick = (anchor) => {
-    const {lineIndex} = anchor;
+    const { lineIndex } = anchor;
     const heading = previewRef.value.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
     if (heading) {
         removeScrollEventListener()
@@ -184,7 +190,7 @@ onMounted(() => {
 })
 
 const like = (liked) => {
-    const param = {type: 1, objUid: blog.uid, status: !liked}
+    const param = { type: 1, objUid: blog.uid, status: !liked }
     request.post('/web/like/save', param).then(result => {
         if (!result) {
             return;

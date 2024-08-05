@@ -1,61 +1,51 @@
 <template>
-  <el-tabs
-    v-model="orderType"
-    type="card"
-    class="tabDiv"
-    @tab-change="tabChange"
-  >
+  <el-tabs v-model="orderType" class="tabDiv" @tab-change="tabChange">
     <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
     <el-tab-pane label="最新" name="newest"></el-tab-pane>
   </el-tabs>
-  <div
-    class="blogList"
-    v-infinite-scroll="load"
-    infinite-scroll-distance="10"
-    infinite-scroll-immediate="false"
-    v-loading="loading"
-  >
-    <div
-      class="blog"
-      v-for="item in list"
-      :key="item.uid"
-      @click="preview(item.uid)"
-    >
-      <div style="width: 100%">
-        <h3>{{ item.title }}</h3>
-        <p class="blog-summary">{{ item.summary }}</p>
-        <div class="blog-stats">
-          <div class="blog-stat-item">
-            <span class="author">{{ item.authorName }}</span>
-          </div>
-          <div class="blog-stat-item">|</div>
-          <div class="blog-stat-item">
-            <span
-              ><el-icon class="stat-icon"> <View /> </el-icon
-            ></span>
-            <span>{{ item.clickCount }}</span>
-          </div>
-          <div class="blog-stat-item">
-            <span
-              ><el-icon class="stat-icon"> <Pointer /> </el-icon
-            ></span>
-            <span>{{ item.likeCount }}</span>
-          </div>
-          <div class="blog-stat-item">
-            <span
-              ><el-icon class="stat-icon"> <Star /> </el-icon
-            ></span>
-            <span>{{ item.collectCount }}</span>
-          </div>
-          <div class="blog-stat-item">
-            <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{
-              tag
-            }}</el-tag>
+  <div class="blogList" v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false"
+    v-loading="loading">
+    <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
+      <div class="blog">
+        <div class="blog-info">
+          <div class="blog-title">{{ item.title }}</div>
+          <p class="blog-summary">{{ item.summary }}</p>
+          <div class="blog-stats">
+            <div class="blog-stat-item">
+              <el-text type="info" class="author">{{ item.authorName }}</el-text>
+            </div>
+            <div class="blog-stat-item">
+              <el-text type="info">
+                <el-icon>
+                  <View />
+                </el-icon>
+                {{ item.clickCount }}
+              </el-text>
+            </div>
+            <div class="blog-stat-item">
+              <el-text type="info">
+                <el-icon>
+                  <Pointer />
+                </el-icon>
+                {{ item.likeCount }}
+              </el-text>
+            </div>
+            <div class="blog-stat-item">
+              <el-text type="info">
+                <el-icon>
+                  <Star />
+                </el-icon>
+                {{ item.collectCount }}
+              </el-text>
+            </div>
+            <div class="blog-stat-item">
+              <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="coverDiv" v-if="item.picUid !== null">
-        <img :src="imgUrl + item.picUid" style="width: 120px; height: 120px" />
+        <div class="blog-cover" v-if="item.picUid !== null">
+          <img :src="imgUrl + item.picUid" style="width: 120px; height: 80px" />
+        </div>
       </div>
     </div>
   </div>
@@ -113,6 +103,14 @@ const preview = (id) => {
 .el-tabs__header {
   margin: 0 !important;
 }
+
+.el-tabs__item {
+  margin-left: 20px !important;
+}
+
+.el-tabs__active-bar {
+  transform: translateX(20px);
+}
 </style>
 
 <style scoped>
@@ -126,6 +124,10 @@ const preview = (id) => {
   padding: 0 5px;
 }
 
+.blog-background:hover {
+  background-color: #f2f3f5;
+}
+
 .blog {
   cursor: pointer;
   display: flex;
@@ -134,13 +136,27 @@ const preview = (id) => {
   border-bottom: 1px solid #edeeef;
 }
 
-.blog:hover {
-  background-color: #f2f3f5;
+.blog-info {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-title {
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .blog-summary {
-  font-size: 12px;
-  color: lightgray;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #8A919F;
 }
 
 .blog-stats {
@@ -163,16 +179,16 @@ const preview = (id) => {
   margin-left: auto;
 }
 
-.stat-icon {
-  margin-top: 0.5rem;
-}
-
-.coverDiv {
+.blog-cover {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.author {
+.blog-cover img {
+  width: 100px;
+  height: auto;
 }
+
+.author {}
 
 .author:hover {
   color: #409eff;
