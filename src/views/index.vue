@@ -10,46 +10,24 @@
           <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
-          <el-input
-            v-model="keyWord"
-            style="width: 240px"
-            placeholder="想搜索点什么呢"
-          >
+          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
             <template #append>
               <el-button :icon="Search" @click="doSearch" />
             </template>
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button
-            v-if="isUserEmpty(user)"
-            type="primary"
-            plain
-            @click="openLoginForm"
-            >登录/注册
+          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册
           </el-button>
           <div v-else class="centered-container">
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-button
-                  type="primary"
-                  :icon="Edit"
-                  class="centered-item creation"
-                  >创作</el-button
-                >
+                <el-button type="primary" :icon="Edit" class="centered-item creation">创作</el-button>
               </span>
               <template #dropdown>
                 <el-card class="creationCard">
-                  <el-button
-                    type="success"
-                    size="large"
-                    :icon="Edit"
-                    @click="openEditor"
-                    >写文章</el-button
-                  >
-                  <el-button type="warning" size="large" :icon="Edit"
-                    >草稿箱</el-button
-                  >
+                  <el-button type="success" size="large" :icon="Edit" @click="openEditor">写文章</el-button>
+                  <el-button type="warning" size="large" :icon="Edit">草稿箱</el-button>
                 </el-card>
               </template>
             </el-dropdown>
@@ -58,21 +36,13 @@
             </el-icon>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar
-                  :size="40"
-                  :src="pictureUrl + user.picUid"
-                  class="centered-item avatar"
-                />
+                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="12">
-                      <el-avatar
-                        :size="40"
-                        :src="pictureUrl + user.picUid"
-                        class="centered-item avatar"
-                      />
+                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="12">
                       {{ user.nickName }}
@@ -155,8 +125,9 @@ onMounted(() => {
 function doSearch() {
   if (keyWord.value) {
     let path = route.path;
+    let time = new Date().getTime();
     if (path.startsWith("/search")) {
-      router.push("/search/" + keyWord.value);
+      router.push("/search/" + keyWord.value + '?timestamp=' + time);
     } else {
       window.open(window.location.origin + "/#/search/" + keyWord.value);
     }
