@@ -17,6 +17,33 @@
                   <div class="blog-stat-item">
                     <el-text type="info" class="author">{{ item.authorName }}</el-text>
                   </div>
+                  <div class="blog-stat-item">
+                    <el-text type="info">
+                      <el-icon>
+                        <View />
+                      </el-icon>
+                      {{ item.clickCount }}
+                    </el-text>
+                  </div>
+                  <div class="blog-stat-item">
+                    <el-text type="info">
+                      <el-icon>
+                        <Pointer />
+                      </el-icon>
+                      {{ item.likeCount }}
+                    </el-text>
+                  </div>
+                  <div class="blog-stat-item">
+                    <el-text type="info">
+                      <el-icon>
+                        <Star />
+                      </el-icon>
+                      {{ item.collectCount }}
+                    </el-text>
+                  </div>
+                  <div class="blog-stat-item">
+                    <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
+                  </div>
                 </div>
               </div>
               <div class="coverDiv" v-if="item.picUid !== null">
@@ -184,8 +211,12 @@ body {
   color: darkgray;
 }
 
-.blog-stat-item span:first-child {
+.blog-stat-item span {
   margin-right: 5px;
+}
+
+.blog-stat-item:last-child {
+  margin-left: auto;
 }
 
 .stat-icon {

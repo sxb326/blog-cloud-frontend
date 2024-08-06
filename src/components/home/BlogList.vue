@@ -3,28 +3,16 @@
     <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
     <el-tab-pane label="最新" name="newest"></el-tab-pane>
   </el-tabs>
-  <div
-    class="blogList"
-    v-infinite-scroll="load"
-    infinite-scroll-distance="10"
-    infinite-scroll-immediate="false"
-    v-loading="loading"
-  >
-    <div
-      class="blog-background"
-      v-for="item in list"
-      :key="item.uid"
-      @click="preview(item.uid)"
-    >
+  <div v-infinite-scroll="load" v-loading="loading" class="blogList" infinite-scroll-distance="10"
+    infinite-scroll-immediate="false">
+    <div v-for="item in list" :key="item.uid" class="blog-background" @click="preview(item.uid)">
       <div class="blog">
         <div class="blog-info">
           <div class="blog-title">{{ item.title }}</div>
           <p class="blog-summary">{{ item.summary }}</p>
           <div class="blog-stats">
             <div class="blog-stat-item">
-              <el-text type="info" class="author">{{
-                item.authorName
-              }}</el-text>
+              <el-text type="info" class="author">{{ item.authorName }}</el-text>
             </div>
             <div class="blog-stat-item">
               <el-text type="info">
@@ -51,9 +39,7 @@
               </el-text>
             </div>
             <div class="blog-stat-item">
-              <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{
-                tag
-              }}</el-tag>
+              <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
             </div>
           </div>
         </div>
@@ -200,7 +186,7 @@ defineExpose({ refreshBlogListByCategoryUid });
   color: darkgray;
 }
 
-.blog-stat-item span:first-child {
+.blog-stat-item span {
   margin-right: 5px;
 }
 
@@ -217,8 +203,7 @@ defineExpose({ refreshBlogListByCategoryUid });
   height: auto;
 }
 
-.author {
-}
+.author {}
 
 .author:hover {
   color: #409eff;

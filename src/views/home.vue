@@ -1,21 +1,20 @@
 <template>
   <el-container>
-    <el-aside width="200px" class="aside-container left">
-      <CategoryList
-        @refresh-blog-list="refreshBlogListByCategoryUid"
-      ></CategoryList>
+    <el-aside width="180px" class="aside-container left">
+      <CategoryList @refresh-blog-list="refreshBlogListByCategoryUid"></CategoryList>
     </el-aside>
     <el-main class="main-container">
       <BlogList ref="blogListRef"></BlogList>
     </el-main>
-    <el-aside width="200px" class="aside-container right">
-      <h3>热门文章</h3>
+    <el-aside width="220px" class="aside-container right">
+      <Top10List></Top10List>
     </el-aside>
   </el-container>
 </template>
 <script setup>
 import BlogList from "@/components/home/BlogList.vue";
 import CategoryList from "@/components/home/CategoryList.vue";
+import Top10List from "@/components/home/Top10List.vue";
 import { ref } from "vue";
 
 const blogListRef = ref(null);
@@ -44,7 +43,6 @@ body {
 
 .aside-container {
   text-align: center;
-  height: calc(100vh - 100px);
   overflow-y: auto;
   background-color: #fff;
   padding-bottom: 50px;
@@ -54,9 +52,11 @@ body {
 
 .left {
   margin-right: 20px;
+  height: calc(100vh - 30vh);
 }
 
 .right {
   margin-left: 20px;
+  height: calc(100vh - 30vh);
 }
 </style>

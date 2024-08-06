@@ -8,40 +8,31 @@
             <el-button type="primary" @click="publish">发布文章</el-button>
         </el-col>
     </el-row>
-    <v-md-editor v-model="blog.content" height="calc(100vh - 100px)" :disabled-menus="[]"
-                 :toc-nav-position-right="true" :default-show-toc="true" @upload-image="uploadImage"></v-md-editor>
+    <v-md-editor v-model="blog.content" height="calc(100vh - 100px)" :disabled-menus="[]" :toc-nav-position-right="true"
+        :default-show-toc="true" @upload-image="uploadImage"></v-md-editor>
     <el-dialog v-model="visible" title="发布文章" :close-on-click-modal="false" width="500">
         <el-form ref="formRef" :model="blog" :rules="rules" label-width="auto" style="max-width: 600px">
             <el-form-item label="分类" label-width="80px" prop="categoryUid">
                 <el-select v-model="blog.categoryUid" placeholder="选择分类" style="width: 240px">
-                    <el-option v-for="item in categories" :key="item.uid" :label="item.name" :value="item.uid"/>
+                    <el-option v-for="item in categories" :key="item.uid" :label="item.name" :value="item.uid" />
                 </el-select>
             </el-form-item>
             <el-form-item label="标签" label-width="80px" prop="tagUids">
                 <el-select v-model="blog.tagUids" placeholder="选择标签" style="width: 240px" multiple>
-                    <el-option v-for="item in tags" :key="item.uid" :label="item.name" :value="item.uid"/>
+                    <el-option v-for="item in tags" :key="item.uid" :label="item.name" :value="item.uid" />
                 </el-select>
             </el-form-item>
             <el-form-item label="封面" label-width="80px">
-                <el-upload action="#" list-type="picture-card" :auto-upload="false" :limit="1" :on-change="upload"
-                           :on-preview="openPic" :on-remove="deletePic">
+                <el-upload v-model:file-list="coverList" action="#" list-type="picture-card" :auto-upload="false"
+                    :limit="1" :on-change="upload" :on-remove="deletePic">
                     <el-icon>
-                        <Plus/>
+                        <Plus />
                     </el-icon>
                 </el-upload>
-                <el-dialog v-model="coverVisible" width="350">
-                    <img w-full :src="coverUrl" alt="Preview Image"/>
-                </el-dialog>
             </el-form-item>
             <el-form-item label="简介" label-width="80px" prop="summary">
-                <el-input
-                        v-model="blog.summary"
-                        style="width: 240px"
-                        :rows="2"
-                        type="textarea"
-                        placeholder="请输入简介"
-                        maxlength="100"
-                />
+                <el-input v-model="blog.summary" style="width: 240px" :rows="2" type="textarea" placeholder="请输入简介"
+                    maxlength="100" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="doPublish">发布</el-button>
@@ -51,10 +42,10 @@
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, reactive, ref} from "vue";
-import {useRoute, useRouter} from 'vue-router';
+import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { useRoute, useRouter } from 'vue-router';
 import request from '@/utils/request.js'
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 
 let blog = reactive({});
 
@@ -120,16 +111,9 @@ const upload = (file) => {
         }
     }).then(result => {
         blog.picUid = result.data;
+        coverList.value = []
+        coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
     });
-}
-
-let coverVisible = ref(false);
-let coverUrl = ref('');
-
-//查看封面图片
-const openPic = (file) => {
-    coverUrl.value = file.url
-    coverVisible.value = true
 }
 
 //删除封面图片
@@ -138,9 +122,9 @@ const deletePic = () => {
 }
 
 const rules = reactive({
-    categoryUid: [{required: true, message: '请选择分类', trigger: 'blur'}],
-    tagUids: [{required: true, message: '请选择标签', trigger: 'blur'}],
-    summary: [{required: true, message: '请输入简介', trigger: 'blur'}]
+    categoryUid: [{ required: true, message: '请选择分类', trigger: 'blur' }],
+    tagUids: [{ required: true, message: '请选择标签', trigger: 'blur' }],
+    summary: [{ required: true, message: '请输入简介', trigger: 'blur' }]
 })
 
 //根据路径参数中的id 调用后端接口获取博客内容
@@ -159,6 +143,7 @@ const getBlog = () => {
                 return;
             }
             Object.assign(blog, result.data);
+            coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
             loading.value = false
         })
     }
@@ -189,6 +174,9 @@ const handleSaveKeydown = (event) => {
         saveDraft();
     }
 };
+
+const imgUrl = import.meta.env.VITE_IMG_URL;
+let coverList = ref([])
 
 //按下保存时的监听
 onMounted(() => {
