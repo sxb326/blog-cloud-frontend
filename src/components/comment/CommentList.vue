@@ -1,83 +1,98 @@
 <template>
     <el-drawer v-model="drawerVisible" :title="'评论（' + count + '）'" direction="rtl" :destroy-on-close="true"
-               @closed="closed">
+        @closed="closed">
         <el-row>
             <el-col :span="3">
-                <el-avatar :size="40" :src="pictureUrl + picUid"
-                           class="centered-item avatar" style="margin-top: 15px"/>
+                <el-avatar :size="40" :src="pictureUrl + picUid" class="centered-item avatar"
+                    style="margin-top: 15px" />
             </el-col>
             <el-col :span="21">
-                <CommentBox style="margin-bottom: 20px" :blog-uid="blogId" :parent-uid="'0'"
-                            :reply-to-uid="''" :comment-placeholder="'评论一下吧'"
-                            @refresh-comment="refreshComment"></CommentBox>
+                <CommentBox style="margin-bottom: 20px" :blog-uid="blogId" :parent-uid="'0'" :reply-to-uid="''"
+                    :comment-placeholder="'评论一下吧'" @refresh-comment="refreshComment"></CommentBox>
             </el-col>
         </el-row>
         <div v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false"
-             v-loading="loading"
-             style="overflow: auto; height: calc(100vh - 240px)">
-            <div v-for="(item,index) in data" :key="item.uid">
+            v-loading="loading" style="overflow: auto; height: calc(100vh - 240px)">
+            <div v-for="(item, index) in data" :key="item.uid">
                 <el-row class="comment">
                     <el-col :span="3">
-                        <el-avatar :size="35" :src="pictureUrl + item.userPicUid" class="centered-item avatar"/>
+                        <el-avatar :size="35" :src="pictureUrl + item.userPicUid" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="21">
-                        <el-row class="nickName">{{ item.userNickName }}</el-row>
+                        <el-row class="nickName">
+                            {{ item.userNickName }}
+                            <el-tag v-if="item.isAuthor" size="small" type="primary"
+                                style="margin-left: 5px;">作者</el-tag>
+                        </el-row>
                         <el-row class="content">{{ item.content }}</el-row>
                         <el-row class="bottom">
                             <el-col :span="7">{{ item.createTime }}</el-col>
                             <el-col :span="2" class="blog-stat-item">
-                                <span :style="{color: item.liked ? '#409eff' : ''}">
-                                    <el-icon class="stat-icon" @click="debounceLike(item.uid,item.liked,index)"><Pointer/></el-icon></span>
+                                <span :style="{ color: item.liked ? '#409eff' : '' }">
+                                    <el-icon class="stat-icon" @click="debounceLike(item.uid, item.liked, index)">
+                                        <Pointer />
+                                    </el-icon></span>
                                 <span>{{ item.likeCount }}</span>
                             </el-col>
                             <el-col :span="2" class="blog-stat-item">
-                                <span :style="{color: item.showBox ? '#409eff' : ''}"><el-icon class="stat-icon"
-                                                                                               @click="debounceComment(item.showBox,index)"><ChatLineRound/></el-icon></span>
+                                <span :style="{ color: item.showBox ? '#409eff' : '' }"><el-icon class="stat-icon"
+                                        @click="debounceComment(item.showBox, index)">
+                                        <ChatLineRound />
+                                    </el-icon></span>
                                 <span>{{ item.commentCount }}</span>
                             </el-col>
                         </el-row>
-                        <CommentBox v-if="item.showBox" :blog-uid="blogId" :parent-uid="item.uid"
-                                    :reply-to-uid="''" :comment-placeholder="'回复 '+ item.userNickName +'：'"
-                                    @refresh-comment="refreshComment"></CommentBox>
+                        <CommentBox v-if="item.showBox" :blog-uid="blogId" :parent-uid="item.uid" :reply-to-uid="''"
+                            :comment-placeholder="'回复 ' + item.userNickName + '：'" @refresh-comment="refreshComment">
+                        </CommentBox>
                         <div v-if="item.subComments.length > 0" class="level2Comment">
-                            <el-row class="comment" v-for="(sub,si) in item.subComments" :key="sub.uid">
+                            <el-row class="comment" v-for="(sub, si) in item.subComments" :key="sub.uid">
                                 <el-col :span="3">
                                     <el-avatar :size="30" :src="pictureUrl + sub.userPicUid"
-                                               class="centered-item avatar"/>
+                                        class="centered-item avatar" />
                                 </el-col>
                                 <el-col :span="21">
                                     <el-row v-if="sub.replyToUserId == null">
-                                        <span class="nickName">{{ sub.userNickName }}</span>
+                                        <span class="nickName">{{ sub.userNickName }}
+                                            <el-tag v-if="sub.isAuthor" size="small" type="primary">作者</el-tag>
+                                        </span>
                                         ：{{ sub.content }}
                                     </el-row>
                                     <el-row v-else>
-                                        <span class="nickName">{{ sub.userNickName }}</span>
+                                        <span class="nickName">{{ sub.userNickName }}
+                                            <el-tag v-if="sub.isAuthor" size="small" type="primary">作者</el-tag>
+                                        </span>
                                         &nbsp;回复&nbsp;
-                                        <span class="nickName">{{ sub.replyToUserNickName }}</span>
+                                        <span class="nickName">{{ sub.replyToUserNickName }}
+                                            <el-tag v-if="sub.isReplyToAuthor" size="small" type="primary">作者</el-tag>
+                                        </span>
                                         ：{{ sub.content }}
                                     </el-row>
                                     <el-row class="bottom">
                                         <el-col :span="7">{{ sub.createTime }}</el-col>
                                         <el-col :span="2" class="blog-stat-item">
-                                                <span :style="{color: sub.liked ? '#409eff' : ''}">
-                                                    <el-icon class="stat-icon"
-                                                             @click="debounceLike(sub.uid,sub.liked,index,si)"><Pointer/></el-icon>
-                                                </span>
+                                            <span :style="{ color: sub.liked ? '#409eff' : '' }">
+                                                <el-icon class="stat-icon"
+                                                    @click="debounceLike(sub.uid, sub.liked, index, si)">
+                                                    <Pointer />
+                                                </el-icon>
+                                            </span>
                                             <span>{{ sub.likeCount }}</span>
                                         </el-col>
                                         <el-col :span="2" class="blog-stat-item">
-                                            <span :style="{color: sub.showBox ? '#409eff' : ''}">
+                                            <span :style="{ color: sub.showBox ? '#409eff' : '' }">
                                                 <el-icon class="stat-icon"
-                                                         @click="debounceComment(sub.showBox,index,si)"><ChatLineRound/></el-icon>
+                                                    @click="debounceComment(sub.showBox, index, si)">
+                                                    <ChatLineRound />
+                                                </el-icon>
                                             </span>
                                             <span>{{ sub.commentCount }}</span>
                                         </el-col>
                                         <el-col :span="10"></el-col>
                                     </el-row>
                                     <CommentBox v-if="sub.showBox" :blog-uid="blogId" :parent-uid="item.uid"
-                                                :reply-to-uid="sub.uid"
-                                                :comment-placeholder="'回复 '+ sub.userNickName +'：'"
-                                                @refresh-comment="refreshComment"></CommentBox>
+                                        :reply-to-uid="sub.uid" :comment-placeholder="'回复 ' + sub.userNickName + '：'"
+                                        @refresh-comment="refreshComment"></CommentBox>
                                 </el-col>
                             </el-row>
                         </div>
@@ -89,12 +104,12 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import { ref } from "vue";
 import request from '@/utils/request.js'
-import {ElMessage} from "element-plus";
-import {debounce} from "@/utils/debounce.js";
+import { ElMessage } from "element-plus";
+import { debounce } from "@/utils/debounce.js";
 import CommentBox from "@/components/comment/CommentBox.vue";
-import {localStorage} from "@/utils/storage";
+import { localStorage } from "@/utils/storage";
 
 const drawerVisible = ref(false)
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + "/picture/");
@@ -136,7 +151,7 @@ const closed = () => {
 }
 
 const like = (uid, liked, x, y) => {
-    const param = {type: 2, objUid: uid, status: !liked}
+    const param = { type: 2, objUid: uid, status: !liked }
     request.post('/web/like/save', param).then(result => {
         if (!result) {
             return;
@@ -171,7 +186,7 @@ const comment = (showBox, x, y) => {
     showIndexs = []
 
     if (!showBox) {
-        showIndexs.push({x: x, y: y})
+        showIndexs.push({ x: x, y: y })
     }
     if (y != undefined) {
         data.value[x].subComments[y].showBox = !showBox

@@ -117,7 +117,7 @@ onMounted(() => {
   search()
 })
 </script>
-<style scope>
+<style>
 body {
   background-color: #f2f3f5;
 }

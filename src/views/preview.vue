@@ -43,7 +43,7 @@
                             {{ blog.clickCount }}
                         </el-text>
                     </div>
-                    <el-button v-if="blog.isAuthor" type="primary" text @click="edit">编辑</el-button>
+                    <el-button v-if="blog.isAuthor" class="editBtn" type="primary" text @click="edit">编辑</el-button>
                 </div>
             </div>
             <v-md-preview ref="previewRef" :text="blog.content"></v-md-preview>
@@ -393,5 +393,9 @@ body {
 
 .el-drawer__header {
     margin-bottom: 0px !important;
+}
+
+.editBtn {
+    margin-left: auto;
 }
 </style>

@@ -18,7 +18,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="标签" label-width="80px" prop="tagUids">
-                <el-select v-model="blog.tagUids" placeholder="选择标签" style="width: 240px" multiple>
+                <el-select v-model="blog.tagUids" placeholder="选择标签" style="width: 240px" multiple multiple-limit="3">
                     <el-option v-for="item in tags" :key="item.uid" :label="item.name" :value="item.uid" />
                 </el-select>
             </el-form-item>
@@ -143,7 +143,9 @@ const getBlog = () => {
                 return;
             }
             Object.assign(blog, result.data);
-            coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
+            if (blog.picUid) {
+                coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
+            }
             loading.value = false
         })
     }

@@ -23,7 +23,7 @@ const refreshBlogListByCategoryUid = (categoryUid) => {
   blogListRef.value.refreshBlogListByCategoryUid(categoryUid)
 };
 </script>
-<style scope>
+<style>
 body {
   background-color: #f2f3f5;
 }

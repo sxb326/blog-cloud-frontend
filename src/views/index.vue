@@ -31,7 +31,7 @@
                 </el-card>
               </template>
             </el-dropdown>
-            <el-icon size="30" class="centered-item">
+            <el-icon size="30" class="centered-item" style="color: gray;">
               <BellFilled />
             </el-icon>
             <el-dropdown trigger="click">
