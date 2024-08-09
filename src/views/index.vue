@@ -10,56 +10,30 @@
           <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
-          <el-input
-            v-model="keyWord"
-            style="width: 240px"
-            placeholder="想搜索点什么呢"
-          >
+          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
             <template #append>
               <el-button :icon="Search" @click="doSearch" />
             </template>
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button
-            v-if="isUserEmpty(user)"
-            type="primary"
-            plain
-            @click="openLoginForm"
-            >登录/注册
-          </el-button>
+          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
           <div v-else class="centered-container">
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-button
-                  type="primary"
-                  :icon="Edit"
-                  class="centered-item creation"
-                  >创作</el-button
-                >
+                <el-button type="primary" :icon="Edit" class="centered-item creation">创作</el-button>
               </span>
               <template #dropdown>
                 <el-card class="creationCard">
-                  <el-button
-                    type="success"
-                    size="large"
-                    :icon="Edit"
-                    @click="openEditor"
-                    >写文章</el-button
-                  >
-                  <el-button type="warning" size="large" :icon="Edit"
-                    >草稿箱</el-button
-                  >
+                  <el-button type="success" size="large" :icon="Edit" @click="openEditor">写文章</el-button>
+                  <el-button type="warning" size="large" :icon="Edit">草稿箱</el-button>
                 </el-card>
               </template>
             </el-dropdown>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 <el-icon size="28" class="centered-item" style="color: gray">
-                  <el-badge
-                    :value="messageCount.totalCount"
-                    :hidden="messageCount.totalCount == 0"
-                  >
+                  <el-badge :value="messageCount.totalCount" :hidden="messageCount.totalCount == 0">
                     <BellFilled class="message-icon" />
                   </el-badge>
                 </el-icon>
@@ -68,96 +42,40 @@
                 <div class="message-card">
                   <div class="message-card-item">
                     点赞
-                    <el-tag
-                      v-if="messageCount.likeCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.likeCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.likeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.likeCount }}</el-tag>
                   </div>
                   <div class="message-card-item">
                     评论
-                    <el-tag
-                      v-if="messageCount.commentCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.commentCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.commentCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.commentCount }}</el-tag>
                   </div>
                   <div class="message-card-item">
                     收藏
-                    <el-tag
-                      v-if="messageCount.collectCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.collectCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.collectCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.collectCount }}</el-tag>
                   </div>
                   <div class="message-card-item">
                     关注
-                    <el-tag
-                      v-if="messageCount.followCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.followCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.followCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.followCount }}</el-tag>
                   </div>
                   <div class="message-card-item">
                     私信
-                    <el-tag
-                      v-if="messageCount.chatCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.chatCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.chatCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.chatCount }}</el-tag>
                   </div>
                   <div class="message-card-item">
                     通知
-                    <el-tag
-                      v-if="messageCount.noticeCount > 0"
-                      type="danger"
-                      effect="dark"
-                      round
-                      class="message-card-badge"
-                      size="small"
-                      >{{ messageCount.noticeCount }}</el-tag
-                    >
+                    <el-tag v-if="messageCount.noticeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.noticeCount }}</el-tag>
                   </div>
                 </div>
               </template>
             </el-dropdown>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar
-                  :size="40"
-                  :src="pictureUrl + user.picUid"
-                  class="centered-item avatar"
-                />
+                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="12">
-                      <el-avatar
-                        :size="40"
-                        :src="pictureUrl + user.picUid"
-                        class="centered-item avatar"
-                      />
+                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="12">
                       {{ user.nickName }}
@@ -181,18 +99,18 @@
 </template>
 
 <script setup>
-import { ElMessage } from "element-plus";
-import { Edit, Search } from "@element-plus/icons-vue";
-import { getCurrentInstance, onMounted, reactive, ref } from "vue";
-import { localStorage } from "@/utils/storage";
-import request from "@/utils/request.js";
-import { useRoute, useRouter } from "vue-router";
+import { ElMessage } from 'element-plus';
+import { Edit, Search } from '@element-plus/icons-vue';
+import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
+import { localStorage } from '@/utils/storage';
+import request from '@/utils/request.js';
+import { useRoute, useRouter } from 'vue-router';
 
 const { proxy } = getCurrentInstance();
 
 onMounted(getAuthUser);
 
-const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + "/picture/");
+const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
 
 //获取登录用户头像uid
 let user = reactive({});
@@ -202,7 +120,7 @@ async function getAuthUser() {
   const response = await proxy.$api.auth.getAuthUser();
   if (response.data) {
     Object.assign(user, response.data);
-    localStorage.set("BLOG_USER", response.data);
+    localStorage.set('BLOG_USER', response.data);
     createWebSocketConnection();
   } else {
     for (const key in user) {
@@ -226,7 +144,7 @@ const openLoginForm = () => {
 };
 
 // 搜索
-let keyWord = ref("");
+let keyWord = ref('');
 
 const route = useRoute();
 const router = useRouter();
@@ -249,9 +167,7 @@ let messageCount = reactive({
 });
 
 const createWebSocketConnection = () => {
-  let websocket = new WebSocket(
-    import.meta.env.VITE_APP_SERVICE_API + "/message/websocket/" + user.uid
-  );
+  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.uid);
 
   websocket.onopen = function () {};
   websocket.onmessage = function (msg) {
@@ -265,32 +181,32 @@ function doSearch() {
   if (keyWord.value) {
     let path = route.path;
     let time = new Date().getTime();
-    if (path.startsWith("/search")) {
-      router.push("/search/" + keyWord.value + "?timestamp=" + time);
+    if (path.startsWith('/search')) {
+      router.push('/search/' + keyWord.value + '?timestamp=' + time);
     } else {
-      window.open(window.location.origin + "/#/search/" + keyWord.value);
+      window.open(window.location.origin + '/#/search/' + keyWord.value);
     }
   } else {
     ElMessage({
-      message: "检索关键字不能为空",
-      type: "warning",
+      message: '检索关键字不能为空',
+      type: 'warning',
     });
   }
 }
 
 //注销
 const logout = () => {
-  localStorage.remove("BLOG_TOKEN");
+  localStorage.remove('BLOG_TOKEN');
   ElMessage({
-    message: "注销成功",
-    type: "success",
+    message: '注销成功',
+    type: 'success',
   });
   refreshPage();
 };
 
 const openEditor = () => {
-  request.get("/web/blog/id").then((result) => {
-    window.open(window.location.origin + "/#/editor/" + result.data);
+  request.get('/web/blog/id').then((result) => {
+    window.open(window.location.origin + '/#/editor/' + result.data);
   });
 };
 
