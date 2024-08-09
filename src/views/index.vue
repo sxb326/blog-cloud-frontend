@@ -10,41 +10,154 @@
           <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
-          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
+          <el-input
+            v-model="keyWord"
+            style="width: 240px"
+            placeholder="想搜索点什么呢"
+          >
             <template #append>
               <el-button :icon="Search" @click="doSearch" />
             </template>
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册
+          <el-button
+            v-if="isUserEmpty(user)"
+            type="primary"
+            plain
+            @click="openLoginForm"
+            >登录/注册
           </el-button>
           <div v-else class="centered-container">
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-button type="primary" :icon="Edit" class="centered-item creation">创作</el-button>
+                <el-button
+                  type="primary"
+                  :icon="Edit"
+                  class="centered-item creation"
+                  >创作</el-button
+                >
               </span>
               <template #dropdown>
                 <el-card class="creationCard">
-                  <el-button type="success" size="large" :icon="Edit" @click="openEditor">写文章</el-button>
-                  <el-button type="warning" size="large" :icon="Edit">草稿箱</el-button>
+                  <el-button
+                    type="success"
+                    size="large"
+                    :icon="Edit"
+                    @click="openEditor"
+                    >写文章</el-button
+                  >
+                  <el-button type="warning" size="large" :icon="Edit"
+                    >草稿箱</el-button
+                  >
                 </el-card>
               </template>
             </el-dropdown>
-            <el-icon size="30" class="centered-item" style="color: gray;">
-              <el-badge :value="messageCount" :hidden="messageCount == 0">
-                <BellFilled class="message-icon" />
-              </el-badge>
-            </el-icon>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                <el-icon size="28" class="centered-item" style="color: gray">
+                  <el-badge
+                    :value="messageCount.totalCount"
+                    :hidden="messageCount.totalCount == 0"
+                  >
+                    <BellFilled class="message-icon" />
+                  </el-badge>
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <div class="message-card">
+                  <div class="message-card-item">
+                    点赞
+                    <el-tag
+                      v-if="messageCount.likeCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.likeCount }}</el-tag
+                    >
+                  </div>
+                  <div class="message-card-item">
+                    评论
+                    <el-tag
+                      v-if="messageCount.commentCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.commentCount }}</el-tag
+                    >
+                  </div>
+                  <div class="message-card-item">
+                    收藏
+                    <el-tag
+                      v-if="messageCount.collectCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.collectCount }}</el-tag
+                    >
+                  </div>
+                  <div class="message-card-item">
+                    关注
+                    <el-tag
+                      v-if="messageCount.followCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.followCount }}</el-tag
+                    >
+                  </div>
+                  <div class="message-card-item">
+                    私信
+                    <el-tag
+                      v-if="messageCount.chatCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.chatCount }}</el-tag
+                    >
+                  </div>
+                  <div class="message-card-item">
+                    通知
+                    <el-tag
+                      v-if="messageCount.noticeCount > 0"
+                      type="danger"
+                      effect="dark"
+                      round
+                      class="message-card-badge"
+                      size="small"
+                      >{{ messageCount.noticeCount }}</el-tag
+                    >
+                  </div>
+                </div>
+              </template>
+            </el-dropdown>
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                <el-avatar
+                  :size="40"
+                  :src="pictureUrl + user.picUid"
+                  class="centered-item avatar"
+                />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="12">
-                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                      <el-avatar
+                        :size="40"
+                        :src="pictureUrl + user.picUid"
+                        class="centered-item avatar"
+                      />
                     </el-col>
                     <el-col :span="12">
                       {{ user.nickName }}
@@ -90,7 +203,7 @@ async function getAuthUser() {
   if (response.data) {
     Object.assign(user, response.data);
     localStorage.set("BLOG_USER", response.data);
-    createWebSocketConnection()
+    createWebSocketConnection();
   } else {
     for (const key in user) {
       if (Object.prototype.hasOwnProperty.call(user, key)) {
@@ -125,28 +238,35 @@ onMounted(() => {
   }
 });
 
-let messageCount = ref(0)
+let messageCount = reactive({
+  totalCount: 0,
+  likeCount: 0,
+  commentCount: 0,
+  collectCount: 0,
+  followCount: 0,
+  chatCount: 0,
+  noticeCount: 0,
+});
 
 const createWebSocketConnection = () => {
-  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.uid);
+  let websocket = new WebSocket(
+    import.meta.env.VITE_APP_SERVICE_API + "/message/websocket/" + user.uid
+  );
 
-  websocket.onopen = function () {
-  }
+  websocket.onopen = function () {};
   websocket.onmessage = function (msg) {
-    messageCount.value = msg.data
+    Object.assign(messageCount, JSON.parse(msg.data));
   };
-  websocket.onclose = function () {
-  };
-  websocket.onerror = function () {
-  }
-}
+  websocket.onclose = function () {};
+  websocket.onerror = function () {};
+};
 
 function doSearch() {
   if (keyWord.value) {
     let path = route.path;
     let time = new Date().getTime();
     if (path.startsWith("/search")) {
-      router.push("/search/" + keyWord.value + '?timestamp=' + time);
+      router.push("/search/" + keyWord.value + "?timestamp=" + time);
     } else {
       window.open(window.location.origin + "/#/search/" + keyWord.value);
     }
@@ -271,5 +391,30 @@ a {
 
 .message-icon:hover {
   color: rgb(95, 95, 95);
+}
+
+.message-card {
+  width: 120px;
+  padding: 5px 8px;
+}
+
+.message-card-item {
+  font-size: 16px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  min-height: 40px;
+  cursor: pointer;
+  margin: 5px 0;
+  padding: 0 0 0 10px;
+}
+
+.message-card-item:hover {
+  background: #f2f3f5;
+  color: #409eff !important;
+}
+
+.message-card-badge {
+  margin: 0 10px 0 auto;
 }
 </style>
