@@ -32,7 +32,9 @@
               </template>
             </el-dropdown>
             <el-icon size="30" class="centered-item" style="color: gray;">
-              <BellFilled />
+              <el-badge :value="messageCount" :hidden="messageCount == 0">
+                <BellFilled class="message-icon" />
+              </el-badge>
             </el-icon>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
@@ -88,6 +90,7 @@ async function getAuthUser() {
   if (response.data) {
     Object.assign(user, response.data);
     localStorage.set("BLOG_USER", response.data);
+    createWebSocketConnection()
   } else {
     for (const key in user) {
       if (Object.prototype.hasOwnProperty.call(user, key)) {
@@ -121,6 +124,22 @@ onMounted(() => {
     keyWord.value = route.params.keyword;
   }
 });
+
+let messageCount = ref(0)
+
+const createWebSocketConnection = () => {
+  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.uid);
+
+  websocket.onopen = function () {
+  }
+  websocket.onmessage = function (msg) {
+    messageCount.value = msg.data
+  };
+  websocket.onclose = function () {
+  };
+  websocket.onerror = function () {
+  }
+}
 
 function doSearch() {
   if (keyWord.value) {
@@ -248,5 +267,9 @@ a {
 
 .userCard {
   width: 200px;
+}
+
+.message-icon:hover {
+  color: rgb(95, 95, 95);
 }
 </style>
