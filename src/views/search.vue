@@ -3,11 +3,8 @@
     <el-aside width="200px" class="search-aside left"></el-aside>
     <el-main class="search-main">
       <div v-loading="loading">
-        <div class="total">
-          查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇
-        </div>
-        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
-          infinite-scroll-immediate="false">
+        <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇</div>
+        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false">
           <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
             <div class="blog">
               <div class="blog-info">
@@ -51,7 +48,6 @@
               </div>
             </div>
           </div>
-
         </div>
         <el-empty v-else description="没有结果" />
       </div>
@@ -60,9 +56,9 @@
   </el-container>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
-import request from "@/utils/request.js";
-import { onBeforeRouteUpdate, useRoute } from "vue-router";
+import { ref, onMounted } from 'vue';
+import request from '@/utils/request.js';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
 const imgUrl = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
@@ -83,7 +79,7 @@ let loading = ref(false);
 const getList = () => {
   loading.value = true;
   request
-    .get("/search", {
+    .get('/search', {
       params: { keyword: keyword, page: page.value },
     })
     .then((result) => {
@@ -97,7 +93,7 @@ const getList = () => {
 };
 
 const preview = (id) => {
-  window.open(window.location.origin + "/#/preview/" + id);
+  window.open(window.location.origin + '/#/preview/' + id);
 };
 
 //重新发起检索
@@ -111,17 +107,13 @@ const search = () => {
 onBeforeRouteUpdate((route) => {
   keyword = route.params.keyword;
   search();
-})
+});
 
 onMounted(() => {
-  search()
-})
+  search();
+});
 </script>
 <style>
-body {
-  background-color: #f2f3f5;
-}
-
 .el-container {
   display: flex;
   align-items: stretch;
@@ -196,7 +188,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
-  color: #8A919F;
+  color: #8a919f;
 }
 
 .blog-stats {
@@ -227,7 +219,8 @@ body {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.author {}
+.author {
+}
 
 .author:hover {
   color: #409eff;

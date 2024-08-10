@@ -12,22 +12,18 @@
   </el-container>
 </template>
 <script setup>
-import BlogList from "@/components/home/BlogList.vue";
-import CategoryList from "@/components/home/CategoryList.vue";
-import Top10List from "@/components/home/Top10List.vue";
-import { ref } from "vue";
+import BlogList from '@/components/home/BlogList.vue';
+import CategoryList from '@/components/home/CategoryList.vue';
+import Top10List from '@/components/home/Top10List.vue';
+import { ref } from 'vue';
 
 const blogListRef = ref(null);
 
 const refreshBlogListByCategoryUid = (categoryUid) => {
-  blogListRef.value.refreshBlogListByCategoryUid(categoryUid)
+  blogListRef.value.refreshBlogListByCategoryUid(categoryUid);
 };
 </script>
 <style>
-body {
-  background-color: #f2f3f5;
-}
-
 .el-container {
   display: flex;
   align-items: stretch;
