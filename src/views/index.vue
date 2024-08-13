@@ -215,7 +215,7 @@ const refreshPage = () => {
 };
 
 const openMessage = (type) => {
-  alert('打开消息页面', type);
+  window.open(window.location.origin + '/#/message/' + type);
 };
 </script>
 
