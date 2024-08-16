@@ -72,6 +72,8 @@
                   您
                 </span>
               </el-col>
+              <el-col :span="1"></el-col>
+              <el-col :span="23"><span class="sendTimeBeforeSpan">{{ item.sendTimeBefore }}</span></el-col>
             </el-row>
             <div v-else>
               {{ item.content }}
@@ -201,5 +203,9 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sendTimeBeforeSpan {
+  color: gray;
 }
 </style>
