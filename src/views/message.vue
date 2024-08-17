@@ -100,6 +100,8 @@ let list = ref([]);
 
 let page = ref(1);
 
+let loading = ref(false)
+
 const load = () => {
   page.value++;
   getList();
@@ -129,11 +131,13 @@ const tabChange = (tabName) => {
 };
 
 const getList = () => {
+  loading.value = true;
   request.get('/message/list', { params: { type: type.value, page: page.value } }).then((result) => {
     list.value.push(...result.data);
     if (result.data.length == 0) {
       page.value--;
     }
+    loading.value = false
     getCount();
   });
 };
