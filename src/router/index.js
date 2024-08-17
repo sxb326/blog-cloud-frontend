@@ -24,6 +24,11 @@ export const constantRoutes = [
         component: () => import('@/views/message.vue'),
         meta: { title: '消息' },
       },
+      {
+        path: '/user/:id',
+        component: () => import('@/views/user.vue'),
+        meta: { title: '用户' },
+      },
     ],
   },
   {

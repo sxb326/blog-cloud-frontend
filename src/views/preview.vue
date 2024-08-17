@@ -2,21 +2,23 @@
   <el-container>
     <el-aside width="150px" class="aside-container left">
       <el-badge :value="blog.likeCount" :max="999">
-        <div class="leftBtn" @click="debounceLike(blog.liked)" :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
+        <div class="left-btn" @click="debounceLike(blog.liked)"
+          :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
           <el-icon size="20">
             <Pointer />
           </el-icon>
         </div>
       </el-badge>
       <el-badge :value="blog.commentCount" :max="999">
-        <div class="leftBtn" @click="openComment(blog.uid)">
+        <div class="left-btn" @click="openComment(blog.uid)">
           <el-icon size="20">
             <ChatLineRound />
           </el-icon>
         </div>
       </el-badge>
       <el-badge :value="blog.collectCount" :max="999">
-        <div class="leftBtn" @click="debounceCollect(blog.uid)" :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
+        <div class="left-btn" @click="debounceCollect(blog.uid)"
+          :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
           <el-icon size="20">
             <Star />
           </el-icon>
@@ -47,21 +49,23 @@
       <v-md-preview ref="previewRef" :text="blog.content"></v-md-preview>
     </el-main>
     <el-aside width="300px" class="aside-container right">
-      <div class="authorDiv">
-        <div class="authorInfo">
+      <div class="author-div">
+        <div class="author-info">
           <el-avatar :size="45" :src="pictureUrl + author.picUid" class="centered-item avatar" />
-          <div class="authorNickName">{{ author.nickName }}</div>
+          <div class="author-nick-name">{{ author.nickName }}</div>
+        </div>
+        <div class="blog-info">
+          <el-statistic title="文章数" :value="author.blogCount" />
+          <el-statistic title="阅读数" :value="author.clickCount" />
+          <el-statistic title="点赞数" :value="author.likeCount" />
         </div>
       </div>
-      <div class="directoryDiv" ref="directoryRef">
-        <div
-          v-for="anchor in titles"
-          :key="anchor"
-          @click="directoryClick(anchor)"
-          :id="anchor.id"
-          class="directory-div"
-          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }">
-          <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
+      <div class="directory-div" ref="directoryRef">
+        <div v-for="anchor in titles" :id="anchor.id" :key="anchor"
+          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" class="directory-div"
+          @click="directoryClick(anchor)">
+          <div class="directory-item"
+            :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
             {{ anchor.title }}
           </div>
         </div>
@@ -107,7 +111,7 @@ const getBlog = () => {
       Object.assign(blog, result.data);
       nextTick(() => {
         //成功获取到文章内容，调用接口查询作者信息
-        request.get('/auth/getUserInfo/' + blog.authorId).then((result) => {
+        request.get('/auth/user/' + blog.authorId).then((result) => {
           Object.assign(author, result.data);
         });
         directoryInit();
@@ -286,7 +290,7 @@ const edit = () => {
   margin-left: 20px;
 }
 
-.leftBtn {
+.left-btn {
   border: 1px solid #000000;
   padding: 15px;
   border-radius: 50%;
@@ -299,33 +303,44 @@ const edit = () => {
   margin-bottom: 40px;
 }
 
-.leftBtn:hover {
+.left-btn:hover {
   color: white !important;
   background: #84beff !important;
 }
 
-.authorDiv {
+.author-div {
   width: 100%;
   background-color: #fff;
   border-radius: 5px;
   margin-bottom: 20px;
   height: calc(100vh - 85vh);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
-.authorInfo {
+.author-info {
   align-items: center;
   display: flex;
   margin-left: 30px;
   cursor: pointer;
 }
 
-.authorNickName {
+.blog-info {
+  width: 100%;
+  display: flex;
+}
+
+.blog-info>* {
+  text-align: center;
+  flex: 3;
+}
+
+.author-nick-name {
   margin-left: 10px;
 }
 
-.directoryDiv {
+.directory-div {
   width: 100%;
   background-color: #fff;
   border-radius: 5px;
@@ -354,7 +369,7 @@ const edit = () => {
   display: block;
 }
 
-.directoryDiv:hover::-webkit-scrollbar-thumb {
+.directory-div:hover::-webkit-scrollbar-thumb {
   display: block;
 }
 
