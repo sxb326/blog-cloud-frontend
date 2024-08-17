@@ -19,7 +19,7 @@
                         <el-avatar :size="35" :src="pictureUrl + item.userPicUid" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="21">
-                        <el-row class="nickName">
+                        <el-row class="nickName" @click="openUser(item.userId)">
                             {{ item.userNickName }}
                             <el-tag v-if="item.isAuthor" size="small" type="primary"
                                 style="margin-left: 5px;">作者</el-tag>
@@ -53,17 +53,18 @@
                                 </el-col>
                                 <el-col :span="21">
                                     <el-row v-if="sub.replyToUserId == null">
-                                        <span class="nickName">{{ sub.userNickName }}
+                                        <span class="nickName" @click="openUser(sub.userId)">{{ sub.userNickName }}
                                             <el-tag v-if="sub.isAuthor" size="small" type="primary">作者</el-tag>
                                         </span>
                                         ：{{ sub.content }}
                                     </el-row>
                                     <el-row v-else>
-                                        <span class="nickName">{{ sub.userNickName }}
+                                        <span class="nickName" @click="openUser(sub.userId)">{{ sub.userNickName }}
                                             <el-tag v-if="sub.isAuthor" size="small" type="primary">作者</el-tag>
                                         </span>
                                         &nbsp;回复&nbsp;
-                                        <span class="nickName">{{ sub.replyToUserNickName }}
+                                        <span class="nickName" @click="openUser(sub.replyToUserId)">{{
+        sub.replyToUserNickName }}
                                             <el-tag v-if="sub.isReplyToAuthor" size="small" type="primary">作者</el-tag>
                                         </span>
                                         ：{{ sub.content }}
@@ -227,6 +228,10 @@ const refreshComment = () => {
             emit('refresh-comment-count', result.data.count)
         })
     }
+}
+
+const openUser = (id) => {
+    window.open(window.location.origin + "/#/user/" + id);
 }
 
 defineExpose({

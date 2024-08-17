@@ -30,7 +30,7 @@
         <h1 style="font-size: 2.1em">{{ blog.title }}</h1>
         <div class="blog-stats">
           <div class="blog-stat-item">
-            <el-text type="info" class="author"> {{ blog.authorName }}</el-text>
+            <el-text type="info" class="author" @click="openUser(blog.authorId)"> {{ blog.authorName }}</el-text>
           </div>
           <div class="blog-stat-item">
             <el-text type="info"> {{ blog.createTime }}</el-text>
@@ -50,7 +50,7 @@
     </el-main>
     <el-aside width="300px" class="aside-container right">
       <div class="author-div">
-        <div class="author-info">
+        <div class="author-info" @click="openUser(blog.authorId)">
           <el-avatar :size="45" :src="pictureUrl + author.picUid" class="centered-item avatar" />
           <div class="author-nick-name">{{ author.nickName }}</div>
         </div>
@@ -253,6 +253,10 @@ const refreshCollect = () => {
 const edit = () => {
   router.push('/editor/' + blog.uid);
 };
+
+const openUser = (id) => {
+  window.open(window.location.origin + "/#/user/" + id);
+}
 </script>
 
 <style>

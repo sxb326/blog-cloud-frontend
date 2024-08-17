@@ -12,7 +12,7 @@
           <p class="blog-summary">{{ item.summary }}</p>
           <div class="blog-stats">
             <div class="blog-stat-item">
-              <el-text type="info" class="author">{{ item.authorName }}</el-text>
+              <el-text type="info" class="author" @click.stop="openUser(item.authorId)">{{ item.authorName }}</el-text>
             </div>
             <div class="blog-stat-item">
               <el-text type="info">
@@ -110,6 +110,10 @@ const refreshBlogListByCategoryUid = (categoryUid) => {
   list.value = [];
   getList();
 };
+
+const openUser = (id) => {
+  window.open(window.location.origin + "/#/user/" + id);
+}
 
 defineExpose({ refreshBlogListByCategoryUid });
 </script>

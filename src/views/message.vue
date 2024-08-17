@@ -42,7 +42,7 @@
                 <el-avatar :size="40" :src="imgUrl + item.sendUserPicUid" class="centered-item avatar" />
               </el-col>
               <el-col :span="23">
-                <span class="authorSpan">{{ item.sendUserNickName }}</span>
+                <span class="authorSpan" @click="openUser(item.sendUserUid)">{{ item.sendUserNickName }}</span>
                 <span style="color: gray;">{{ getOperateName(type) }}</span>
                 <span v-if="type === '1'">
                   <span v-if="item.commentUid === null">
@@ -148,6 +148,10 @@ const getCount = () => {
   request.get('/message/counts').then(result => {
     count.value = result.data
   })
+}
+
+const openUser = (id) => {
+  window.open(window.location.origin + "/#/user/" + id);
 }
 
 onMounted(() => {

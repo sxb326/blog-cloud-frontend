@@ -4,7 +4,8 @@
     <el-main class="search-main">
       <div v-loading="loading">
         <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇</div>
-        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false">
+        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
+          infinite-scroll-immediate="false">
           <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
             <div class="blog">
               <div class="blog-info">
@@ -12,7 +13,8 @@
                 <p class="blog-summary">{{ item.summary }}</p>
                 <div class="blog-stats">
                   <div class="blog-stat-item">
-                    <el-text type="info" class="author">{{ item.authorName }}</el-text>
+                    <el-text type="info" class="author" @click.stop="openUser(item.authorId)">{{ item.authorName
+                      }}</el-text>
                   </div>
                   <div class="blog-stat-item">
                     <el-text type="info">
@@ -108,6 +110,10 @@ onBeforeRouteUpdate((route) => {
   keyword = route.params.keyword;
   search();
 });
+
+const openUser = (id) => {
+  window.open(window.location.origin + "/#/user/" + id);
+}
 
 onMounted(() => {
   search();
@@ -219,8 +225,7 @@ onMounted(() => {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.author {
-}
+.author {}
 
 .author:hover {
   color: #409eff;

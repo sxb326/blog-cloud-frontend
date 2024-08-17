@@ -27,7 +27,14 @@ export const constantRoutes = [
       {
         path: '/user/:id',
         component: () => import('@/views/user.vue'),
+        redirect: { name: 'article' },
         meta: { title: '用户' },
+        children: [
+          { name: 'article', path: 'article', component: () => import('@/components/user/Article.vue') },
+          { name: 'column', path: 'column', component: () => import('@/components/user/Column.vue') },
+          { name: 'collect', path: 'collect', component: () => import('@/components/user/Collect.vue') },
+          { name: 'follow', path: 'follow', component: () => import('@/components/user/Follow.vue') },
+        ],
       },
     ],
   },
