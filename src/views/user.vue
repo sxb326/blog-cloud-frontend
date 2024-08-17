@@ -121,8 +121,7 @@ onMounted(() => {
 }
 
 .user-detail {
-    overflow: auto;
-    height: calc(100vh - 260px);
+    height: calc(100vh - 30vh);
     background-color: #fff;
     border: 1px solid #e4e7ed;
     border-radius: 5px;
