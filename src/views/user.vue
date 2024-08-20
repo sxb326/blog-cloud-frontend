@@ -9,7 +9,7 @@
                             <el-avatar :size="45" :src="imgUrl + author.picUid" class="centered-item avatar" />
                             <div class="author-nick-name">{{ author.nickName }}</div>
                         </div>
-                        <div class="author-btn">
+                        <div v-if="author.uid !== authUser.uid" class="author-btn">
                             <el-button size="large" type="primary">关注</el-button>
                             <el-button size="large" :icon="ChatLineSquare" type="primary" plain>私信</el-button>
                         </div>
@@ -57,6 +57,7 @@ import { onMounted, reactive, ref } from 'vue';
 import request from '@/utils/request.js';
 import { useRoute, useRouter } from 'vue-router';
 import { ChatLineSquare } from '@element-plus/icons-vue';
+import { localStorage } from '@/utils/storage';
 
 const route = useRoute();
 const router = useRouter();
@@ -67,6 +68,7 @@ const type = route.name
 
 let loading = ref(false)
 let author = reactive({});
+let authUser = localStorage.get('BLOG_USER');
 
 const getUserInfo = () => {
     loading.value = true;
