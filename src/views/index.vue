@@ -40,29 +40,35 @@
               </span>
               <template #dropdown>
                 <div class="message-card">
-                  <div class="message-card-item" @click="openMessage('1')">
+                  <div class="message-card-item" @click="openMessage('like')">
                     点赞
-                    <el-tag v-if="messageCount.likeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.likeCount }}</el-tag>
+                    <el-tag v-if="messageCount.likeCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.likeCount }}</el-tag>
                   </div>
-                  <div class="message-card-item" @click="openMessage('2')">
+                  <div class="message-card-item" @click="openMessage('comment')">
                     评论
-                    <el-tag v-if="messageCount.commentCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.commentCount }}</el-tag>
+                    <el-tag v-if="messageCount.commentCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.commentCount }}</el-tag>
                   </div>
-                  <div class="message-card-item" @click="openMessage('3')">
+                  <div class="message-card-item" @click="openMessage('collect')">
                     收藏
-                    <el-tag v-if="messageCount.collectCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.collectCount }}</el-tag>
+                    <el-tag v-if="messageCount.collectCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.collectCount }}</el-tag>
                   </div>
-                  <div class="message-card-item" @click="openMessage('4')">
+                  <div class="message-card-item" @click="openMessage('follow')">
                     关注
-                    <el-tag v-if="messageCount.followCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.followCount }}</el-tag>
+                    <el-tag v-if="messageCount.followCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.followCount }}</el-tag>
                   </div>
-                  <div class="message-card-item" @click="openMessage('5')">
+                  <div class="message-card-item" @click="openMessage('chat')">
                     私信
-                    <el-tag v-if="messageCount.chatCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.chatCount }}</el-tag>
+                    <el-tag v-if="messageCount.chatCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.chatCount }}</el-tag>
                   </div>
-                  <div class="message-card-item" @click="openMessage('6')">
+                  <div class="message-card-item" @click="openMessage('notice')">
                     通知
-                    <el-tag v-if="messageCount.noticeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.noticeCount }}</el-tag>
+                    <el-tag v-if="messageCount.noticeCount > 0" type="danger" effect="dark" round
+                      class="message-card-badge" size="small">{{ messageCount.noticeCount }}</el-tag>
                   </div>
                 </div>
               </template>
@@ -169,12 +175,12 @@ let messageCount = reactive({
 const createWebSocketConnection = () => {
   let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.uid);
 
-  websocket.onopen = function () {};
+  websocket.onopen = function () { };
   websocket.onmessage = function (msg) {
     Object.assign(messageCount, JSON.parse(msg.data));
   };
-  websocket.onclose = function () {};
-  websocket.onerror = function () {};
+  websocket.onclose = function () { };
+  websocket.onerror = function () { };
 };
 
 function doSearch() {

@@ -20,9 +20,18 @@ export const constantRoutes = [
         meta: { title: '检索' },
       },
       {
-        path: '/message/:type',
+        path: '/message',
         component: () => import('@/views/message.vue'),
+        redirect: { name: 'like' },
         meta: { title: '消息' },
+        children: [
+          { name: 'like', path: 'like', component: () => import('@/components/message/Like.vue') },
+          { name: 'comment', path: 'comment', component: () => import('@/components/message/Comment.vue') },
+          { name: 'collect', path: 'collect', component: () => import('@/components/message/Collect.vue') },
+          { name: 'follow', path: 'follow', component: () => import('@/components/message/Follow.vue') },
+          { name: 'chat', path: 'chat', component: () => import('@/components/message/Chat.vue') },
+          { name: 'notice', path: 'notice', component: () => import('@/components/message/Notice.vue') },
+        ],
       },
       {
         path: '/user/:id',
