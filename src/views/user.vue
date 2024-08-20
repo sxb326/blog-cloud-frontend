@@ -19,8 +19,6 @@
                     <el-tabs v-model="type" @tab-change="tabChange">
                         <el-tab-pane label="文章" name="article"></el-tab-pane>
                         <el-tab-pane label="专栏" name="column"></el-tab-pane>
-                        <el-tab-pane label="收藏" name="collect"></el-tab-pane>
-                        <el-tab-pane label="关注" name="follow"></el-tab-pane>
                     </el-tabs>
                     <router-view />
                 </div>

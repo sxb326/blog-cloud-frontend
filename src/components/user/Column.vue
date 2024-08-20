@@ -1,3 +1,3 @@
 <template>
-    <div>专栏列表</div>
+    <el-empty description="敬请期待" />
 </template>
