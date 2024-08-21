@@ -62,7 +62,7 @@
       </div>
       <div class="directory-div" ref="directoryRef">
         <div v-for="anchor in titles" :id="anchor.id" :key="anchor"
-          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" class="directory-div"
+          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }"
           @click="directoryClick(anchor)">
           <div class="directory-item"
             :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
@@ -259,7 +259,7 @@ const openUser = (id) => {
 }
 </script>
 
-<style>
+<style scoped>
 .el-container {
   display: flex;
   align-items: stretch;
@@ -354,10 +354,6 @@ const openUser = (id) => {
   overflow-x: hidden;
   padding-top: 5px;
   font-size: 14px;
-}
-
-.directory-div:hover {
-  border-left: 2px solid #007bff !important;
 }
 
 .directory-item {
