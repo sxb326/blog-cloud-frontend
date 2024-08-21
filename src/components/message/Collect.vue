@@ -49,11 +49,8 @@ const getList = () => {
             page.value--;
         }
         loading.value = false
-        emit('refresh-count')
     });
 };
-
-const emit = defineEmits(['refresh-count'])
 
 const jumpToPreview = (blogUid) => {
     window.open(window.location.origin + "/#/preview/" + blogUid);

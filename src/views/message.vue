@@ -4,32 +4,32 @@
       <el-tabs v-model="type" class="message-tab" @tab-change="tabChange">
         <el-tab-pane name="like">
           <template #label>
-            <el-badge :value="count[0]" :show-zero="false">点赞</el-badge>
+            <el-badge :value="count[0]" :hidden="count[0] == 0">点赞</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="comment">
           <template #label>
-            <el-badge :value="count[1]" :show-zero="false">评论</el-badge>
+            <el-badge :value="count[1]" :hidden="count[1] == 0">评论</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="collect">
           <template #label>
-            <el-badge :value="count[2]" :show-zero="false">收藏</el-badge>
+            <el-badge :value="count[2]" :hidden="count[2] == 0">收藏</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="follow">
           <template #label>
-            <el-badge :value="count[3]" :show-zero="false">关注</el-badge>
+            <el-badge :value="count[3]" :hidden="count[3] == 0">关注</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="chat">
           <template #label>
-            <el-badge :value="count[4]" :show-zero="false">私信</el-badge>
+            <el-badge :value="count[4]" :hidden="count[4] == 0">私信</el-badge>
           </template>
         </el-tab-pane>
         <el-tab-pane name="notice">
           <template #label>
-            <el-badge :value="count[5]" :show-zero="false">通知</el-badge>
+            <el-badge :value="count[5]" :hidden="count[5] == 0">通知</el-badge>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { watch, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import request from '@/utils/request.js';
 const route = useRoute();
@@ -60,9 +60,14 @@ const getCount = () => {
   })
 }
 
-onMounted(() => {
-  getCount();
-})
+watch(
+  () => route.fullPath, // 返回要监听的响应式引用  
+  () => {
+    setTimeout(() => {
+      getCount()
+    }, 100);
+  }, { immediate: true }
+);
 </script>
 <style>
 .message-main {

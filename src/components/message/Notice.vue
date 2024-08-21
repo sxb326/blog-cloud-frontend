@@ -34,11 +34,8 @@ const getList = () => {
             page.value--;
         }
         loading.value = false
-        emit('refresh-count')
     });
 };
-
-const emit = defineEmits(['refresh-count'])
 
 onMounted(() => {
     getList();
