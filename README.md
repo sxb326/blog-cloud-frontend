@@ -1,7 +1,15 @@
-# Vue 3 + Vite
+# blog-cloud
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+#### 介绍
 
-## Recommended IDE Setup
+个人学习技术分布式博客前端项目
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+#### 软件架构
+
+基于Vue3 + Vite 创建的Vue3项目，集成了Axios、Element-Plus等常用框架，集成了v-md-editor做文章编辑器。
+
+#### 安装教程
+
+1. 下载本项目
+2. 安装node20（node18也可运行 会有警告）
+3. npm i安装依赖，npm run dev启动项目
