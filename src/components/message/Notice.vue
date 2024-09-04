@@ -2,7 +2,7 @@
     <div v-infinite-scroll="load" v-loading="loading" class="message-content" infinite-scroll-distance="10"
         infinite-scroll-immediate="false">
         <div v-if="list.length > 0">
-            <div v-for="item in list" :key="item.uid">
+            <div class="message-item" v-for="item in list" :key="item.uid">
                 {{ item.content }}
             </div>
         </div>

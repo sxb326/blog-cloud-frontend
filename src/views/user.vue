@@ -10,8 +10,11 @@
                             <div class="author-nick-name">{{ author.nickName }}</div>
                         </div>
                         <div v-if="author.uid !== authUser.uid" class="author-btn">
-                            <el-button size="large" type="primary">关注</el-button>
-                            <el-button size="large" :icon="ChatLineSquare" type="primary" plain>私信</el-button>
+                            <el-button v-if="author.isFollow === true" size="large" plain type="primary"
+                                @click="follow">已关注</el-button>
+                            <el-button v-else size="large" type="primary" @click="follow">关注</el-button>
+                            <el-button size="large" :icon="ChatLineSquare" type="primary" plain
+                                @click="chat">私信</el-button>
                         </div>
                     </div>
                 </div>
@@ -82,6 +85,17 @@ const tabChange = (tabName) => {
     router.replace(tabName)
 };
 
+const chat = () => {
+    request.post('/message/chat/send', { contactUid: userId, content: '' }).then(() => {
+        window.open(window.location.origin + '/#/message/chat?id=' + userId);
+    })
+}
+
+const follow = () => {
+    request.post('/web/follow/save', { targetUserUid: userId, isFollow: !author.isFollow }).then(() => {
+        author.isFollow = !author.isFollow
+    });
+}
 onMounted(() => {
     getUserInfo()
 })
