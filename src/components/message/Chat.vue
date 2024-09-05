@@ -98,10 +98,12 @@ const clickConversation = (contactUid) => {
 const getChatList = () => {
     request.get('/message/chat/list', { params: { contactUid: chat.contactUid, cursor: cursor.value } }).then(result => {
         chatList.value.unshift(...result.data)
-        cursor.value = result.data[0].uid
-        nextTick(() => {
-            chatRef.value.scrollTop = chatRef.value.scrollHeight;
-        });
+        if (result.data.length > 0) {
+            cursor.value = result.data[0].uid
+            nextTick(() => {
+                chatRef.value.scrollTop = chatRef.value.scrollHeight;
+            });
+        }
     })
 }
 
@@ -117,10 +119,12 @@ const onScroll = () => {
 const refreshChatList = () => {
     request.get('/message/chat/list', { params: { contactUid: chat.contactUid, cursor: cursor.value } }).then(result => {
         chatList.value.unshift(...result.data)
-        cursor.value = result.data[0].uid
+        if (result.data.length > 0) {
+            cursor.value = result.data[0].uid
+            chatRef.value.scrollTop = result.data.length
+        }
     })
 }
-
 
 const send = () => {
     formRef.value.validate((valid) => {
