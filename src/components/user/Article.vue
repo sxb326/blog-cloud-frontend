@@ -42,6 +42,10 @@
                             </el-text>
                         </div>
                         <div class="blog-stat-item">
+                            <el-button v-if="item.isAuthor" class="editBtn" type="primary" text
+                                @click.stop="edit(item.uid)">编辑</el-button>
+                        </div>
+                        <div class="blog-stat-item">
                             <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
                         </div>
                     </div>
@@ -57,10 +61,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import request from "@/utils/request.js";
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const imgUrl = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
+const router = useRouter();
 
 const userId = route.params.id;
 
@@ -101,6 +106,11 @@ let page = ref(1);
 const load = () => {
     page.value++;
     getList();
+};
+
+//编辑文章
+const edit = (uid) => {
+    router.push('/editor/' + uid);
 };
 
 onMounted(getList);

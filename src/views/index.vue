@@ -7,7 +7,6 @@
         </el-col>
         <el-col :span="9" class="header-nav">
           <router-link to="/home" class="menuItem">首页</router-link>
-          <router-link to="/test" class="menuItem">专栏</router-link>
         </el-col>
         <el-col :span="6">
           <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
@@ -19,17 +18,7 @@
         <el-col :span="4" class="header-right">
           <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
           <div v-else class="centered-container">
-            <el-dropdown trigger="click">
-              <span class="el-dropdown-link">
-                <el-button type="primary" :icon="Edit" class="centered-item creation">创作</el-button>
-              </span>
-              <template #dropdown>
-                <el-card class="creationCard">
-                  <el-button type="success" size="large" :icon="Edit" @click="openEditor">写文章</el-button>
-                  <el-button type="warning" size="large" :icon="Edit">草稿箱</el-button>
-                </el-card>
-              </template>
-            </el-dropdown>
+            <el-button type="primary" :icon="Edit" @click="openEditor" class="centered-item creation">写文章</el-button>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 <el-icon size="28" class="centered-item" style="color: gray">
@@ -80,14 +69,21 @@
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
-                    <el-col :span="12">
+                    <el-col :span="6">
                       <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
                     </el-col>
+                    <el-col :span="18"
+                      style="display: flex;justify-content: center;align-items: center;font-weight: bold">
+                      {{ user.nickName }} </el-col>
+                  </el-row>
+                  <el-row>
                     <el-col :span="12">
-                      {{ user.nickName }}
+                      <el-button text @click="openUser(user.uid)">个人主页</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-button text @click="logout">退出登录</el-button>
                     </el-col>
                   </el-row>
-                  <el-button text @click="logout">退出登录</el-button>
                 </el-card>
               </template>
             </el-dropdown>
@@ -223,6 +219,10 @@ const refreshPage = () => {
 const openMessage = (type) => {
   window.open(window.location.origin + '/#/message/' + type);
 };
+
+const openUser = (id) => {
+  window.open(window.location.origin + "/#/user/" + id);
+}
 </script>
 
 <style scoped>

@@ -10,7 +10,8 @@
               <div class="author-nick-name">{{ author.nickName }}</div>
             </div>
             <div v-if="author.uid !== authUser.uid" class="author-btn">
-              <el-button v-if="author.isFollow === true" size="large" plain type="primary" @click="follow">已关注</el-button>
+              <el-button v-if="author.isFollow === true" size="large" plain type="primary"
+                @click="follow">已关注</el-button>
               <el-button v-else size="large" type="primary" @click="follow">关注</el-button>
               <el-button size="large" :icon="ChatLineSquare" type="primary" plain @click="chat">私信</el-button>
             </div>
@@ -19,36 +20,46 @@
         <div shadow="never" class="user-detail">
           <el-tabs v-model="type" @tab-change="tabChange">
             <el-tab-pane label="文章" name="article"></el-tab-pane>
-            <el-tab-pane label="专栏" name="column"></el-tab-pane>
+            <!-- <el-tab-pane label="专栏" name="column"></el-tab-pane> -->
           </el-tabs>
           <router-view />
         </div>
       </div>
     </el-main>
-    <el-card shadow="never" class="right">
-      <template #header> 个人成就 </template>
-      <div class="achievement-div">
-        <el-icon :size="25">
-          <List />
-        </el-icon>
-        <div class="achievement-text">文章数</div>
-        <div class="achievement-value">{{ author.blogCount }}</div>
-      </div>
-      <div class="achievement-div">
-        <el-icon :size="25">
-          <View />
-        </el-icon>
-        <div class="achievement-text">阅读数</div>
-        <div class="achievement-value">{{ author.clickCount }}</div>
-      </div>
-      <div class="achievement-div">
-        <el-icon :size="25">
-          <Pointer />
-        </el-icon>
-        <div class="achievement-text">点赞数</div>
-        <div class="achievement-value">{{ author.likeCount }}</div>
-      </div>
-    </el-card>
+    <div>
+      <el-card shadow="never" class="right">
+        <template #header> 个人成就 </template>
+        <div class="achievement-div">
+          <el-icon :size="25">
+            <List />
+          </el-icon>
+          <div class="achievement-text">文章数</div>
+          <div class="achievement-value">{{ author.blogCount }}</div>
+        </div>
+        <div class="achievement-div">
+          <el-icon :size="25">
+            <View />
+          </el-icon>
+          <div class="achievement-text">阅读数</div>
+          <div class="achievement-value">{{ author.clickCount }}</div>
+        </div>
+        <div class="achievement-div">
+          <el-icon :size="25">
+            <Pointer />
+          </el-icon>
+          <div class="achievement-text">点赞数</div>
+          <div class="achievement-value">{{ author.likeCount }}</div>
+        </div>
+      </el-card>
+      <el-card shadow="never" class="right-follow">
+        <template #header> 粉丝&关注 </template>
+        <div style="width: 100%;display: flex;">
+          <el-statistic style="flex: 5;text-align: center;" title="粉丝数" :value="author.followerCount" />
+          <el-statistic style="flex: 5;text-align: center;" title="关注数" :value="author.followingCount" />
+        </div>
+      </el-card>
+    </div>
+
   </el-container>
 </template>
 <script setup>
@@ -83,8 +94,8 @@ const tabChange = (tabName) => {
 };
 
 const chat = () => {
-  request.post('/message/chat/send', { contactUid: userId, content: '' }).then(() => {
-    window.open(window.location.origin + '/#/message/chat?id=' + userId);
+  request.post('/message/conversation/save', { receiveUserUid: userId }).then((result) => {
+    window.open(window.location.origin + '/#/message/chat?id=' + result.data);
   });
 };
 
@@ -121,8 +132,18 @@ onMounted(() => {
 .right {
   border-radius: 5px;
   margin-left: 20px;
+  margin-bottom: 20px;
   background-color: #fff;
   height: 200px;
+  width: 300px;
+}
+
+.right-follow {
+  border-radius: 5px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  height: 150px;
   width: 300px;
 }
 
@@ -165,7 +186,7 @@ onMounted(() => {
   margin-left: auto;
 }
 
-.author-btn > * {
+.author-btn>* {
   width: 90px;
 }
 

@@ -8,7 +8,7 @@ export const constantRoutes = [
     component: () => import('@/views/index.vue'),
     redirect: '/home',
     children: [
-      { path: '/home', component: () => import('@/views/home.vue') },
+      { path: '/home', component: () => import('@/views/home.vue'), meta: { title: '首页' } },
       {
         path: '/preview/:id',
         component: () => import('@/views/preview.vue'),
@@ -83,7 +83,7 @@ router.beforeEach((to, from, next) => {
 //后置路由守卫
 router.afterEach((to) => {
   if (to.meta && to.meta.title) {
-    document.title = '分布式博客 - ' + to.meta.title;
+    document.title = to.meta.title;
   } else {
     document.title = '分布式博客';
   }

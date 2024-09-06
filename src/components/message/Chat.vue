@@ -11,19 +11,24 @@
                 </div>
                 <div v-loading="loading" class="list-div">
                     <el-row v-for="item in conversationList" :key="item.uid" class="list-item"
-                        :style="{ background: item.contactUid === chat.contactUid ? '#d1ffff' : 'white' }"
-                        @click="clickConversation(item.contactUid)">
+                        :style="{ background: item.uid === conversationId ? '#d1ffff' : 'white' }"
+                        @click="clickConversation(item.uid, item.contactUid)">
                         <el-col :span="6">
                             <el-avatar :size="40" :src="imgUrl + item.picUid" />
                         </el-col>
-                        <el-col :span="18">
+                        <el-col :span="16">
                             {{ item.contactNickName }}
                             <div class="list-item-content">{{ item.chatContent }}</div>
+                        </el-col>
+                        <el-col :span="2">
+                            <el-badge class="item" :value="item.notReceiveCount" :hidden="item.notReceiveCount == 0"
+                                :offset="[10, 5]">
+                            </el-badge>
                         </el-col>
                     </el-row>
                 </div>
             </el-col>
-            <el-col :span="18">
+            <el-col v-loading="chatLoading" :span="18" style="display: flex;flex-direction: column;height: 100%;">
                 <div ref="chatRef" @scroll="onScroll" class="chat-content">
                     <div v-for="item in chatList" :key="item.uid">
                         <div v-if="item.content.length > 0" style="max-width: 60%;"
@@ -36,6 +41,9 @@
                                 <div>{{ item.content }}</div>
                             </div>
                         </div>
+                    </div>
+                    <div v-show="newEstBthShow" style="position: sticky;right: 0;bottom: 0;">
+                        <el-button style="margin-left: 10px;" type="danger" plain @click="showNewest">新消息↓</el-button>
                     </div>
                 </div>
                 <div class="chat-input">
@@ -53,9 +61,11 @@
 </template>
 <script setup>
 import { nextTick, onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import request from '@/utils/request.js';
 import { Search } from '@element-plus/icons-vue';
 
+const route = useRoute();
 const imgUrl = import.meta.env.VITE_IMG_URL;
 let loading = ref(false)
 
@@ -68,10 +78,20 @@ const doSearch = () => {
     getConversationList()
 }
 
+let conversationId = ref('')
+
 const getConversationList = () => {
     loading.value = true;
     request.get('/message/conversation/list', { params: { keyword: keyword.value } }).then((result) => {
         conversationList.value = result.data;
+        let id = route.query.id;
+        if (id) {
+            //高亮会话
+            conversationId.value = id;
+            //获取该会话私信数据
+            let data = conversationList.value.find(c => c.uid === id);
+            clickConversation(data.uid, data.contactUid)
+        }
         loading.value = false
     });
 }
@@ -79,6 +99,8 @@ const getConversationList = () => {
 let chatList = ref([])
 const chatRef = ref(null)
 let cursor = ref(0)
+let newestCursor = ref(0)
+let chatLoading = ref(false)
 
 let chat = reactive({ contactUid: '', content: '' })
 const formRef = ref(null);
@@ -86,24 +108,37 @@ const rules = reactive({
     content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
 })
 
-const clickConversation = (contactUid) => {
+let interval;
+
+const clickConversation = (uid, contactUid) => {
     if (chat.contactUid !== contactUid) {
         chatList.value = []
         chat.contactUid = contactUid
         chat.content = ''
+        conversationId.value = uid
+        //查询私信消息数据
         getChatList()
+        //轮询最新消息
+        clearInterval(interval)
+        interval = setInterval(() => {
+            refreshNewestList('p')
+        }, 2000);
     }
 }
 
 const getChatList = () => {
-    request.get('/message/chat/list', { params: { contactUid: chat.contactUid, cursor: cursor.value } }).then(result => {
+    chatLoading.value = true
+    request.get('/message/chat/list', { params: { conversationUid: conversationId.value, contactUid: chat.contactUid, cursor: cursor.value } }).then(result => {
+        chatLoading.value = false
         chatList.value.unshift(...result.data)
         if (result.data.length > 0) {
             cursor.value = result.data[0].uid
             nextTick(() => {
                 chatRef.value.scrollTop = chatRef.value.scrollHeight;
             });
+            newestCursor.value = result.data[result.data.length - 1].uid
         }
+        conversationList.value.find(c => c.uid === conversationId.value).notReceiveCount = 0
     })
 }
 
@@ -117,11 +152,29 @@ const onScroll = () => {
 };
 
 const refreshChatList = () => {
+    chatLoading.value = true
     request.get('/message/chat/list', { params: { contactUid: chat.contactUid, cursor: cursor.value } }).then(result => {
         chatList.value.unshift(...result.data)
         if (result.data.length > 0) {
             cursor.value = result.data[0].uid
             chatRef.value.scrollTop = result.data.length
+        }
+        chatLoading.value = false
+    })
+}
+
+const refreshNewestList = (type) => {
+    request.get('/message/chat/newest', { params: { contactUid: chat.contactUid, cursor: newestCursor.value } }).then(result => {
+        chatList.value.push(...result.data)
+        if (result.data.length > 0) {
+            newestCursor.value = result.data[result.data.length - 1].uid
+            if (type === 'p') {
+                newEstBthShow.value = true
+            } else if (type === 'i') {
+                nextTick(() => {
+                    chatRef.value.scrollTop = chatRef.value.scrollHeight;
+                });
+            }
         }
     })
 }
@@ -132,20 +185,21 @@ const send = () => {
             return false;
         }
         request.post('/message/chat/send', chat).then(() => {
-            chatList.value = []
             chat.content = ''
-            getChatList()
+            refreshNewestList('i')
         })
     })
 }
 
+let newEstBthShow = ref(false)
+
+const showNewest = () => {
+    newEstBthShow.value = false;
+    chatRef.value.scrollTop = chatRef.value.scrollHeight;
+}
+
 onMounted(() => {
     getConversationList();
-    // let id = route.query.id;
-    // if (id) {
-    //     chat.contactUid = id;
-    //     getChatList()
-    // }
 });
 </script>
 
@@ -158,13 +212,10 @@ onMounted(() => {
     color: #d1ffff;
 }
 
-.left {
-    /* border-right: 1px solid gainsboro; */
-}
+.left {}
 
 .right {
     width: 100%;
-    /* margin: 10px; */
 }
 
 .search-div {
@@ -199,12 +250,12 @@ onMounted(() => {
 }
 
 .chat-content {
-    height: calc(50vh);
+    flex-grow: 8;
     overflow: auto;
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* margin:10px */
+    position: relative;
 }
 
 .chat-content-item {
@@ -227,7 +278,7 @@ onMounted(() => {
 }
 
 .chat-input {
-    height: calc(20vh);
+    flex-grow: 2;
     margin: 10px;
 }
 </style>
