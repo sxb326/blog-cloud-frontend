@@ -83,7 +83,7 @@ let authUser = localStorage.get('BLOG_USER');
 
 const getUserInfo = () => {
   loading.value = true;
-  request.get('/auth/user/' + userId).then((result) => {
+  request.get('/web/user/getUserInfo', { params: { id: userId } }).then((result) => {
     Object.assign(author, result.data);
   });
   loading.value = false;

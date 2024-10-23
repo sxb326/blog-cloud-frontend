@@ -43,7 +43,7 @@ const login = () => {
         if (!valid) {
             return false;
         }
-        request.post('/auth/login', form).then(result => {
+        request.post('/login', form).then(result => {
             const { code, message } = result;
             if (code === '0') {
                 ElMessage({

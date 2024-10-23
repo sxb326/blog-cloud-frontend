@@ -2,7 +2,8 @@
   <el-container v-loading="loading">
     <el-aside width="150px" class="aside-container left">
       <el-badge :value="blog.likeCount" :max="999">
-        <div class="left-btn" @click="debounceLike(blog.liked)" :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
+        <div class="left-btn" @click="debounceLike(blog.liked)"
+          :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
           <el-icon size="20">
             <Pointer />
           </el-icon>
@@ -16,7 +17,8 @@
         </div>
       </el-badge>
       <el-badge :value="blog.collectCount" :max="999">
-        <div class="left-btn" @click="debounceCollect(blog.uid)" :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
+        <div class="left-btn" @click="debounceCollect(blog.uid)"
+          :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
           <el-icon size="20">
             <Star />
           </el-icon>
@@ -59,8 +61,11 @@
         </div>
       </div>
       <div class="directory-div" ref="directoryRef">
-        <div v-for="anchor in titles" :id="anchor.id" :key="anchor" :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" @click="directoryClick(anchor)">
-          <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
+        <div v-for="anchor in titles" :id="anchor.id" :key="anchor"
+          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }"
+          @click="directoryClick(anchor)">
+          <div class="directory-item"
+            :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
             {{ anchor.title }}
           </div>
         </div>
@@ -106,7 +111,7 @@ const getBlog = () => {
       Object.assign(blog, result.data);
       nextTick(() => {
         //成功获取到文章内容，调用接口查询作者信息
-        request.get('/auth/user/' + blog.authorId).then((result) => {
+        request.get('/web/user/getUserInfo', { params: { id: blog.authorId } }).then((result) => {
           Object.assign(author, result.data);
         });
         directoryInit();
@@ -221,7 +226,7 @@ const favoriteRef = ref();
 
 //打开收藏夹
 const collect = (blogId) => {
-  request.get('/auth/checkLoginStatus').then((result) => {
+  request.get('/web/user/getAuthUser').then((result) => {
     if (!result.data) {
       ElMessage({
         message: '请先登录',
@@ -330,7 +335,7 @@ const openUser = (id) => {
   display: flex;
 }
 
-.blog-info > * {
+.blog-info>* {
   text-align: center;
   flex: 3;
 }
