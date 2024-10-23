@@ -64,13 +64,13 @@
             </el-dropdown>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-                <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                <el-avatar :size="40" :src="pictureUrl + user.picId" class="centered-item avatar" />
               </span>
               <template #dropdown>
                 <el-card class="userCard">
                   <el-row>
                     <el-col :span="6">
-                      <el-avatar :size="40" :src="pictureUrl + user.picUid" class="centered-item avatar" />
+                      <el-avatar :size="40" :src="pictureUrl + user.picId" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="18"
                       style="display: flex;justify-content: center;align-items: center;font-weight: bold">
@@ -78,7 +78,7 @@
                   </el-row>
                   <el-row>
                     <el-col :span="12">
-                      <el-button text @click="openUser(user.uid)">个人主页</el-button>
+                      <el-button text @click="openUser(user.id)">个人主页</el-button>
                     </el-col>
                     <el-col :span="12">
                       <el-button text @click="logout">退出登录</el-button>
@@ -114,7 +114,7 @@ onMounted(getAuthUser);
 
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
 
-//获取登录用户头像uid
+//获取登录用户头像id
 let user = reactive({});
 
 //获取当前登录用户
@@ -169,7 +169,7 @@ let messageCount = reactive({
 });
 
 const createWebSocketConnection = () => {
-  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.uid);
+  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.id);
 
   websocket.onopen = function () { };
   websocket.onmessage = function (msg) {

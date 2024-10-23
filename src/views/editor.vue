@@ -12,14 +12,14 @@
         :default-show-toc="true" @upload-image="uploadImage"></v-md-editor>
     <el-dialog v-model="visible" title="发布文章" :close-on-click-modal="false" width="500">
         <el-form ref="formRef" :model="blog" :rules="rules" label-width="auto" style="max-width: 600px">
-            <el-form-item label="分类" label-width="80px" prop="categoryUid">
-                <el-select v-model="blog.categoryUid" placeholder="选择分类" style="width: 240px">
-                    <el-option v-for="item in categories" :key="item.uid" :label="item.name" :value="item.uid" />
+            <el-form-item label="分类" label-width="80px" prop="categoryId">
+                <el-select v-model="blog.categoryId" placeholder="选择分类" style="width: 240px">
+                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="标签" label-width="80px" prop="tagUids">
-                <el-select v-model="blog.tagUids" placeholder="选择标签" style="width: 240px" multiple multiple-limit="3">
-                    <el-option v-for="item in tags" :key="item.uid" :label="item.name" :value="item.uid" />
+            <el-form-item label="标签" label-width="80px" prop="tagIds">
+                <el-select v-model="blog.tagIds" placeholder="选择标签" style="width: 240px" multiple multiple-limit="3">
+                    <el-option v-for="item in tags" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
             <el-form-item label="封面" label-width="80px">
@@ -110,27 +110,27 @@ const upload = (file) => {
             'Content-Type': 'multipart/form-data'
         }
     }).then(result => {
-        blog.picUid = result.data;
+        blog.picId = result.data;
         coverList.value = []
-        coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
+        coverList.value.push({ name: 'cover-' + blog.picId, url: imgUrl + blog.picId })
     });
 }
 
 //删除封面图片
 const deletePic = () => {
-    blog.picUid = ''
+    blog.picId = ''
 }
 
 const rules = reactive({
-    categoryUid: [{ required: true, message: '请选择分类', trigger: 'blur' }],
-    tagUids: [{ required: true, message: '请选择标签', trigger: 'blur' }],
+    categoryId: [{ required: true, message: '请选择分类', trigger: 'blur' }],
+    tagIds: [{ required: true, message: '请选择标签', trigger: 'blur' }],
     summary: [{ required: true, message: '请输入简介', trigger: 'blur' }]
 })
 
 //根据路径参数中的id 调用后端接口获取博客内容
 const getBlog = () => {
     let id = route.params.id;
-    blog.uid = id;
+    blog.id = id;
     if (id) {
         loading.value = true
         request.get('/web/blog/' + id).then(result => {
@@ -143,8 +143,8 @@ const getBlog = () => {
                 return;
             }
             Object.assign(blog, result.data);
-            if (blog.picUid) {
-                coverList.value.push({ name: 'cover-' + blog.picUid, url: imgUrl + blog.picUid })
+            if (blog.picId) {
+                coverList.value.push({ name: 'cover-' + blog.picId, url: imgUrl + blog.picId })
             }
             loading.value = false
         })
@@ -161,7 +161,7 @@ const saveDraft = () => {
         return false;
     }
     request.post('/web/draft/save', blog).then(result => {
-        blog.uid = result.data
+        blog.id = result.data
         ElMessage({
             message: result.message,
             type: 'success',

@@ -10,14 +10,14 @@
         </div>
       </el-badge>
       <el-badge :value="blog.commentCount" :max="999">
-        <div class="left-btn" @click="openComment(blog.uid)">
+        <div class="left-btn" @click="openComment(blog.id)">
           <el-icon size="20">
             <ChatLineRound />
           </el-icon>
         </div>
       </el-badge>
       <el-badge :value="blog.collectCount" :max="999">
-        <div class="left-btn" @click="debounceCollect(blog.uid)"
+        <div class="left-btn" @click="debounceCollect(blog.id)"
           :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
           <el-icon size="20">
             <Star />
@@ -51,7 +51,7 @@
     <el-aside width="300px" class="aside-container right">
       <div class="author-div">
         <div class="author-info" @click="openUser(blog.authorId)">
-          <el-avatar :size="45" :src="pictureUrl + author.picUid" class="centered-item avatar" />
+          <el-avatar :size="45" :src="pictureUrl + author.picId" class="centered-item avatar" />
           <div class="author-nick-name">{{ author.nickName }}</div>
         </div>
         <div class="blog-info">
@@ -96,7 +96,7 @@ let titles = ref([]);
 //根据路径参数中的id 调用后端接口获取博客内容
 const getBlog = () => {
   let id = route.params.id;
-  blog.uid = id;
+  blog.id = id;
   if (id) {
     loading.value = true;
     request.get('/web/preview/' + id).then((result) => {
@@ -195,7 +195,7 @@ onMounted(() => {
 });
 
 const like = (liked) => {
-  const param = { type: 1, objUid: blog.uid, status: !liked };
+  const param = { type: 1, objId: blog.id, status: !liked };
   request.post('/web/like/save', param).then((result) => {
     if (!result) {
       return;
@@ -242,7 +242,7 @@ const debounceCollect = debounce(collect, 200);
 
 //刷新文章收藏数
 const refreshCollect = () => {
-  request.get('/web/blog/collectCount/' + blog.uid).then((result) => {
+  request.get('/web/blog/collectCount/' + blog.id).then((result) => {
     const collectCount = result.data;
     blog.collected = collectCount >= blog.collectCount;
     blog.collectCount = collectCount;
@@ -251,7 +251,7 @@ const refreshCollect = () => {
 
 //编辑文章
 const edit = () => {
-  router.push('/editor/' + blog.uid);
+  router.push('/editor/' + blog.id);
 };
 
 const openUser = (id) => {

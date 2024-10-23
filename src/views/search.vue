@@ -6,7 +6,7 @@
         <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇</div>
         <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
           infinite-scroll-immediate="false">
-          <div class="blog-background" v-for="item in list" :key="item.uid" @click="preview(item.uid)">
+          <div class="blog-background" v-for="item in list" :key="item.id" @click="preview(item.id)">
             <div class="blog">
               <div class="blog-info">
                 <div class="blog-title" v-html="item.title"></div>
@@ -45,8 +45,8 @@
                   </div>
                 </div>
               </div>
-              <div class="coverDiv" v-if="item.picUid !== null">
-                <img :src="imgUrl + item.picUid" style="width: 120px; height: 80px" />
+              <div class="coverDiv" v-if="item.picId !== null">
+                <img :src="imgUrl + item.picId" style="width: 120px; height: 80px" />
               </div>
             </div>
           </div>

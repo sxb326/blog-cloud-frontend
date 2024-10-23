@@ -2,21 +2,21 @@
     <div v-infinite-scroll="load" v-loading="loading" class="message-content" infinite-scroll-distance="10"
         infinite-scroll-immediate="false">
         <div v-if="list.length > 0">
-            <div v-for="item in list" :key="item.uid">
+            <div v-for="item in list" :key="item.id">
                 <el-row v-if="item.content === null" class="message-item" :gutter="20">
                     <el-col :span="1">
-                        <el-avatar :size="40" :src="imgUrl + item.sendUserPicUid" class="centered-item avatar" />
+                        <el-avatar :size="40" :src="imgUrl + item.sendUserPicId" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="23">
-                        <span class="authorSpan" @click="openUser(item.sendUserUid)">{{ item.sendUserNickName }}</span>
+                        <span class="authorSpan" @click="openUser(item.sendUserId)">{{ item.sendUserNickName }}</span>
                         <span style="color: gray;">点赞了</span>
-                        <span v-if="item.commentUid === null">
-                            您的文章：<span class="blogTitleSpan" @click="jumpToPreview(item.blogUid)">《{{ item.blogTitle
+                        <span v-if="item.commentId === null">
+                            您的文章：<span class="blogTitleSpan" @click="jumpToPreview(item.blogId)">《{{ item.blogTitle
                                 }}》</span>
                         </span>
                         <span v-else>
                             您在文章
-                            <span class="blogTitleSpan" @click="jumpToPreview(item.blogUid)">《{{ item.blogTitle
+                            <span class="blogTitleSpan" @click="jumpToPreview(item.blogId)">《{{ item.blogTitle
                                 }}》</span>
                             中的评论：<div class="commentContent">{{ item.commentContent }}</div>
                         </span>
@@ -60,8 +60,8 @@ const getList = () => {
     });
 };
 
-const jumpToPreview = (blogUid) => {
-    window.open(window.location.origin + "/#/preview/" + blogUid);
+const jumpToPreview = (blogId) => {
+    window.open(window.location.origin + "/#/preview/" + blogId);
 }
 
 const openUser = (id) => {

@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside width="180px" class="aside-container left">
-      <CategoryList @refresh-blog-list="refreshBlogListByCategoryUid"></CategoryList>
+      <CategoryList @refresh-blog-list="refreshBlogListByCategoryId"></CategoryList>
     </el-aside>
     <el-main class="main-container">
       <BlogList ref="blogListRef"></BlogList>
@@ -17,8 +17,8 @@ import { ref } from 'vue';
 
 const blogListRef = ref(null);
 
-const refreshBlogListByCategoryUid = (categoryUid) => {
-  blogListRef.value.refreshBlogListByCategoryUid(categoryUid);
+const refreshBlogListByCategoryId = (categoryId) => {
+  blogListRef.value.refreshBlogListByCategoryId(categoryId);
 };
 </script>
 <style>

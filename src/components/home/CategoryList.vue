@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-for="item in list" :key="item.uid" class="category" :style="{
-      background: categoryUid === item.uid ? '#eaf2ff' : '',
-      color: categoryUid === item.uid ? '#409eff' : 'gray',
-    }" @click="categoryChange(item.uid)">
+    <div v-for="item in list" :key="item.id" class="category" :style="{
+      background: categoryId === item.id ? '#eaf2ff' : '',
+      color: categoryId === item.id ? '#409eff' : 'gray',
+    }" @click="categoryChange(item.id)">
       <div class="category-icon">
         <el-icon :size="20">
           <component :is="getIcon(item.icon)"></component>
@@ -23,7 +23,7 @@ import * as icons from "@element-plus/icons-vue";
 
 const emit = defineEmits(["refresh-blog-list"]);
 
-let categoryUid = ref("");
+let categoryId = ref("");
 let list = ref([]);
 
 const getIcon = (icon) => {
@@ -32,14 +32,14 @@ const getIcon = (icon) => {
 
 const getList = () => {
   request.get("/web/home/category").then((result) => {
-    list.value.push({ uid: "", name: "综合", icon: 'Discount' });
+    list.value.push({ id: "", name: "综合", icon: 'Discount' });
     list.value.push(...result.data);
   });
 };
 
-const categoryChange = (uid) => {
-  categoryUid.value = uid;
-  emit("refresh-blog-list", uid);
+const categoryChange = (id) => {
+  categoryId.value = id;
+  emit("refresh-blog-list", id);
 };
 
 onMounted(() => {

@@ -7,7 +7,7 @@
     </div>
     <div v-infinite-scroll="load" v-loading="loading" class="blogList" infinite-scroll-distance="10"
         infinite-scroll-immediate="false">
-        <div v-for="item in list" :key="item.uid" class="blog-background" @click="preview(item.uid)">
+        <div v-for="item in list" :key="item.id" class="blog-background" @click="preview(item.id)">
             <div class="blog">
                 <div class="blog-info">
                     <div class="blog-title">{{ item.title }}</div>
@@ -43,15 +43,15 @@
                         </div>
                         <div class="blog-stat-item">
                             <el-button v-if="item.isAuthor" class="editBtn" type="primary" text
-                                @click.stop="edit(item.uid)">编辑</el-button>
+                                @click.stop="edit(item.id)">编辑</el-button>
                         </div>
                         <div class="blog-stat-item">
                             <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
                         </div>
                     </div>
                 </div>
-                <div class="blog-cover" v-if="item.picUid !== null">
-                    <img :src="imgUrl + item.picUid" style="width: 120px; height: 80px" />
+                <div class="blog-cover" v-if="item.picId !== null">
+                    <img :src="imgUrl + item.picId" style="width: 120px; height: 80px" />
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@ const getList = () => {
         .get("/web/preview/listBlogByUser", {
             params: {
                 page: page.value,
-                userUid: userId,
+                userId: userId,
                 orderType: orderType.value,
             },
         })
@@ -109,8 +109,8 @@ const load = () => {
 };
 
 //编辑文章
-const edit = (uid) => {
-    router.push('/editor/' + uid);
+const edit = (id) => {
+    router.push('/editor/' + id);
 };
 
 onMounted(getList);

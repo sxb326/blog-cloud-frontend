@@ -37,11 +37,11 @@ const emit = defineEmits(['refresh-collect'])
 //多选框切换事件
 const change = (data) => {
     list.value.forEach(i => {
-        if (i.uid !== data.uid) {
+        if (i.id !== data.id) {
             i.collected = false
         }
     })
-    list.value.find(i => i.uid === data.uid).collected = data.collected
+    list.value.find(i => i.id === data.id).collected = data.collected
 }
 
 //保存收藏信息
@@ -49,7 +49,7 @@ const save = () => {
     let collected = list.value.find(i => i.collected)
     let favoriteId = ''
     if (collected) {
-        favoriteId = collected.uid
+        favoriteId = collected.id
     }
     const param = {
         blogId: blogId.value,

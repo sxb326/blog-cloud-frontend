@@ -12,12 +12,12 @@
         <div v-loading="loading" class="list-div">
           <el-row
             v-for="item in conversationList"
-            :key="item.uid"
+            :key="item.id"
             class="list-item"
-            :style="{ background: item.uid === conversationId ? '#d1ffff' : 'white' }"
-            @click="clickConversation(item.uid, item.contactUid)">
+            :style="{ background: item.id === conversationId ? '#d1ffff' : 'white' }"
+            @click="clickConversation(item.id, item.contactId)">
             <el-col :span="6">
-              <el-avatar :size="40" :src="imgUrl + item.picUid" />
+              <el-avatar :size="40" :src="imgUrl + item.picId" />
             </el-col>
             <el-col :span="16">
               {{ item.contactNickName }}
@@ -31,7 +31,7 @@
       </el-col>
       <el-col v-loading="chatLoading" :span="18" style="display: flex; flex-direction: column; height: 100%">
         <div ref="chatRef" @scroll="onScroll" class="chat-content">
-          <div v-for="item in chatList" :key="item.uid">
+          <div v-for="item in chatList" :key="item.id">
             <div v-if="item.content.length > 0" style="max-width: 60%" :style="item.isSend ? { float: 'right' } : { float: 'left' }" class="chat-content-item">
               <div class="chat-content-title" :style="item.isSend ? { 'text-align': 'right' } : { 'text-align': 'left' }">
                 {{ item.createTime }}
@@ -87,8 +87,8 @@ const getConversationList = () => {
       //高亮会话
       conversationId.value = id;
       //获取该会话私信数据
-      let data = conversationList.value.find((c) => c.uid === id);
-      clickConversation(data.uid, data.contactUid);
+      let data = conversationList.value.find((c) => c.id === id);
+      clickConversation(data.id, data.contactId);
     }
     loading.value = false;
   });
@@ -100,7 +100,7 @@ let cursor = ref(0);
 let newestCursor = ref(0);
 let chatLoading = ref(false);
 
-let chat = reactive({ contactUid: '', content: '' });
+let chat = reactive({ contactId: '', content: '' });
 const formRef = ref(null);
 const rules = reactive({
   content: [{ required: true, message: '请输入内容', trigger: 'blur' }],
@@ -108,12 +108,12 @@ const rules = reactive({
 
 let interval;
 
-const clickConversation = (uid, contactUid) => {
-  if (chat.contactUid !== contactUid) {
+const clickConversation = (id, contactId) => {
+  if (chat.contactId !== contactId) {
     chatList.value = [];
-    chat.contactUid = contactUid;
+    chat.contactId = contactId;
     chat.content = '';
-    conversationId.value = uid;
+    conversationId.value = id;
     //查询私信消息数据
     getChatList();
     //轮询最新消息
@@ -126,17 +126,17 @@ const clickConversation = (uid, contactUid) => {
 
 const getChatList = () => {
   chatLoading.value = true;
-  request.get('/message/chat/list', { params: { conversationUid: conversationId.value, contactUid: chat.contactUid, cursor: cursor.value } }).then((result) => {
+  request.get('/message/chat/list', { params: { conversationId: conversationId.value, contactId: chat.contactId, cursor: cursor.value } }).then((result) => {
     chatLoading.value = false;
     chatList.value.unshift(...result.data);
     if (result.data.length > 0) {
-      cursor.value = result.data[0].uid;
+      cursor.value = result.data[0].id;
       nextTick(() => {
         chatRef.value.scrollTop = chatRef.value.scrollHeight;
       });
-      newestCursor.value = result.data[result.data.length - 1].uid;
+      newestCursor.value = result.data[result.data.length - 1].id;
     }
-    conversationList.value.find((c) => c.uid === conversationId.value).notReceiveCount = 0;
+    conversationList.value.find((c) => c.id === conversationId.value).notReceiveCount = 0;
   });
 };
 
@@ -151,10 +151,10 @@ const onScroll = () => {
 
 const refreshChatList = () => {
   chatLoading.value = true;
-  request.get('/message/chat/list', { params: { contactUid: chat.contactUid, cursor: cursor.value } }).then((result) => {
+  request.get('/message/chat/list', { params: { contactId: chat.contactId, cursor: cursor.value } }).then((result) => {
     chatList.value.unshift(...result.data);
     if (result.data.length > 0) {
-      cursor.value = result.data[0].uid;
+      cursor.value = result.data[0].id;
       chatRef.value.scrollTop = result.data.length;
     }
     chatLoading.value = false;
@@ -162,10 +162,10 @@ const refreshChatList = () => {
 };
 
 const refreshNewestList = (type) => {
-  request.get('/message/chat/newest', { params: { contactUid: chat.contactUid, cursor: newestCursor.value } }).then((result) => {
+  request.get('/message/chat/newest', { params: { contactId: chat.contactId, cursor: newestCursor.value } }).then((result) => {
     chatList.value.push(...result.data);
     if (result.data.length > 0) {
-      newestCursor.value = result.data[result.data.length - 1].uid;
+      newestCursor.value = result.data[result.data.length - 1].id;
       if (type === 'p') {
         newEstBthShow.value = true;
       } else if (type === 'i') {

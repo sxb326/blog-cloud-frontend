@@ -3,20 +3,20 @@
         @closed="closed">
         <el-row>
             <el-col :span="3">
-                <el-avatar :size="40" :src="pictureUrl + picUid" class="centered-item avatar"
+                <el-avatar :size="40" :src="pictureUrl + picId" class="centered-item avatar"
                     style="margin-top: 15px" />
             </el-col>
             <el-col :span="21">
-                <CommentBox style="margin-bottom: 20px" :blog-uid="blogId" :parent-uid="'0'" :reply-to-uid="''"
+                <CommentBox style="margin-bottom: 20px" :blog-id="blogId" :parent-id="'0'" :reply-to-id="''"
                     :comment-placeholder="'评论一下吧'" @refresh-comment="refreshComment"></CommentBox>
             </el-col>
         </el-row>
         <div v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false"
             v-loading="loading" style="overflow: auto; height: calc(100vh - 240px)">
-            <div v-for="(item, index) in data" :key="item.uid">
+            <div v-for="(item, index) in data" :key="item.id">
                 <el-row class="comment">
                     <el-col :span="3">
-                        <el-avatar :size="35" :src="pictureUrl + item.userPicUid" class="centered-item avatar" />
+                        <el-avatar :size="35" :src="pictureUrl + item.userPicId" class="centered-item avatar" />
                     </el-col>
                     <el-col :span="21">
                         <el-row class="nickName" @click="openUser(item.userId)">
@@ -29,7 +29,7 @@
                             <el-col :span="7">{{ item.createTime }}</el-col>
                             <el-col :span="2" class="blog-stat-item">
                                 <span :style="{ color: item.liked ? '#409eff' : '' }">
-                                    <el-icon class="stat-icon" @click="debounceLike(item.uid, item.liked, index)">
+                                    <el-icon class="stat-icon" @click="debounceLike(item.id, item.liked, index)">
                                         <Pointer />
                                     </el-icon></span>
                                 <span>{{ item.likeCount }}</span>
@@ -42,13 +42,13 @@
                                 <span>{{ item.commentCount }}</span>
                             </el-col>
                         </el-row>
-                        <CommentBox v-if="item.showBox" :blog-uid="blogId" :parent-uid="item.uid" :reply-to-uid="''"
+                        <CommentBox v-if="item.showBox" :blog-id="blogId" :parent-id="item.id" :reply-to-id="''"
                             :comment-placeholder="'回复 ' + item.userNickName + '：'" @refresh-comment="refreshComment">
                         </CommentBox>
                         <div v-if="item.subComments.length > 0" class="level2Comment">
-                            <el-row class="comment" v-for="(sub, si) in item.subComments" :key="sub.uid">
+                            <el-row class="comment" v-for="(sub, si) in item.subComments" :key="sub.id">
                                 <el-col :span="3">
-                                    <el-avatar :size="30" :src="pictureUrl + sub.userPicUid"
+                                    <el-avatar :size="30" :src="pictureUrl + sub.userPicId"
                                         class="centered-item avatar" />
                                 </el-col>
                                 <el-col :span="21">
@@ -74,7 +74,7 @@
                                         <el-col :span="2" class="blog-stat-item">
                                             <span :style="{ color: sub.liked ? '#409eff' : '' }">
                                                 <el-icon class="stat-icon"
-                                                    @click="debounceLike(sub.uid, sub.liked, index, si)">
+                                                    @click="debounceLike(sub.id, sub.liked, index, si)">
                                                     <Pointer />
                                                 </el-icon>
                                             </span>
@@ -91,8 +91,8 @@
                                         </el-col>
                                         <el-col :span="10"></el-col>
                                     </el-row>
-                                    <CommentBox v-if="sub.showBox" :blog-uid="blogId" :parent-uid="item.uid"
-                                        :reply-to-uid="sub.uid" :comment-placeholder="'回复 ' + sub.userNickName + '：'"
+                                    <CommentBox v-if="sub.showBox" :blog-id="blogId" :parent-id="item.id"
+                                        :reply-to-id="sub.id" :comment-placeholder="'回复 ' + sub.userNickName + '：'"
                                         @refresh-comment="refreshComment"></CommentBox>
                                 </el-col>
                             </el-row>
@@ -114,7 +114,7 @@ import { localStorage } from "@/utils/storage";
 
 const drawerVisible = ref(false)
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + "/picture/");
-const picUid = localStorage.get("BLOG_USER") ? localStorage.get("BLOG_USER").picUid : ''
+const picId = localStorage.get("BLOG_USER") ? localStorage.get("BLOG_USER").picId : ''
 
 let blogId = ref('')
 let count = ref(0)
@@ -151,8 +151,8 @@ const closed = () => {
     page.value = 1
 }
 
-const like = (uid, liked, x, y) => {
-    const param = { type: 2, objUid: uid, status: !liked }
+const like = (id, liked, x, y) => {
+    const param = { type: 2, objId: id, status: !liked }
     request.post('/web/like/save', param).then(result => {
         if (!result) {
             return;
@@ -215,7 +215,7 @@ const refreshComment = () => {
             data.value[x].showBox = false
         }
         //根据父评论id重新获取评论数据
-        request.get('/web/comment/' + blogId.value + "/" + data.value[x].uid).then(result => {
+        request.get('/web/comment/' + blogId.value + "/" + data.value[x].id).then(result => {
             data.value[x] = result.data.data[0]
             count.value = result.data.count
             emit('refresh-comment-count', result.data.count)

@@ -5,7 +5,7 @@
   </el-tabs>
   <div v-infinite-scroll="load" v-loading="loading" class="blogList" infinite-scroll-distance="10"
     infinite-scroll-immediate="false">
-    <div v-for="item in list" :key="item.uid" class="blog-background" @click="preview(item.uid)">
+    <div v-for="item in list" :key="item.id" class="blog-background" @click="preview(item.id)">
       <div class="blog">
         <div class="blog-info">
           <div class="blog-title">{{ item.title }}</div>
@@ -43,8 +43,8 @@
             </div>
           </div>
         </div>
-        <div class="blog-cover" v-if="item.picUid !== null">
-          <img :src="imgUrl + item.picUid" style="width: 120px; height: 80px" />
+        <div class="blog-cover" v-if="item.picId !== null">
+          <img :src="imgUrl + item.picId" style="width: 120px; height: 80px" />
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@ const getList = () => {
     .get("/web/home/list", {
       params: {
         page: page.value,
-        categoryUid: category.value,
+        categoryId: category.value,
         orderType: orderType.value,
       },
     })
@@ -103,8 +103,8 @@ const preview = (id) => {
   window.open(window.location.origin + "/#/preview/" + id);
 };
 
-const refreshBlogListByCategoryUid = (categoryUid) => {
-  category.value = categoryUid;
+const refreshBlogListByCategoryId = (categoryId) => {
+  category.value = categoryId;
   orderType.value = "recommend";
   page.value = 1;
   list.value = [];
@@ -115,7 +115,7 @@ const openUser = (id) => {
   window.open(window.location.origin + "/#/user/" + id);
 }
 
-defineExpose({ refreshBlogListByCategoryUid });
+defineExpose({ refreshBlogListByCategoryId });
 </script>
 
 <style>

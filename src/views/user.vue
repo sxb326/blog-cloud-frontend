@@ -6,10 +6,10 @@
         <div shadow="never" class="user-info">
           <div class="author-div">
             <div class="author-info">
-              <el-avatar :size="45" :src="imgUrl + author.picUid" class="centered-item avatar" />
+              <el-avatar :size="45" :src="imgUrl + author.picId" class="centered-item avatar" />
               <div class="author-nick-name">{{ author.nickName }}</div>
             </div>
-            <div v-if="author.uid !== authUser.uid" class="author-btn">
+            <div v-if="author.id !== authUser.id" class="author-btn">
               <el-button v-if="author.isFollow === true" size="large" plain type="primary"
                 @click="follow">已关注</el-button>
               <el-button v-else size="large" type="primary" @click="follow">关注</el-button>
@@ -94,13 +94,13 @@ const tabChange = (tabName) => {
 };
 
 const chat = () => {
-  request.post('/message/conversation/save', { receiveUserUid: userId }).then((result) => {
+  request.post('/message/conversation/save', { receiveUserId: userId }).then((result) => {
     window.open(window.location.origin + '/#/message/chat?id=' + result.data);
   });
 };
 
 const follow = () => {
-  request.post('/web/follow/save', { targetUserUid: userId, isFollow: !author.isFollow }).then((result) => {
+  request.post('/web/follow/save', { targetUserId: userId, isFollow: !author.isFollow }).then((result) => {
     ElMessage({
       message: result.message,
       type: 'success',

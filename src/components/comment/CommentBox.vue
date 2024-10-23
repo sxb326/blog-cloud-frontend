@@ -13,20 +13,20 @@ import {defineProps, onMounted, reactive, ref} from "vue";
 import request from '@/utils/request.js'
 import {ElMessage} from "element-plus";
 
-let comment = reactive({blogUid: '', parentUid: '', replyToUid: '', content: ''})
+let comment = reactive({blogId: '', parentId: '', replyToId: '', content: ''})
 let placeholder = ref('')
 
 const props = defineProps({
-    blogUid: {type: String, required: true},
-    parentUid: {type: String, required: true},
-    replyToUid: {type: String, required: true},
+    blogId: {type: String, required: true},
+    parentId: {type: String, required: true},
+    replyToId: {type: String, required: true},
     commentPlaceholder: {type: String, required: true}
 })
 
 onMounted(() => {
-    comment.blogUid = props.blogUid
-    comment.parentUid = props.parentUid
-    comment.replyToUid = props.replyToUid
+    comment.blogId = props.blogId
+    comment.parentId = props.parentId
+    comment.replyToId = props.replyToId
     placeholder.value = props.commentPlaceholder
 })
 
