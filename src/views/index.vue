@@ -18,7 +18,7 @@
         <el-col :span="4" class="header-right">
           <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
           <div v-else class="centered-container">
-            <el-button type="primary" :icon="Edit" @click="openEditor" class="centered-item creation">写文章</el-button>
+            <el-button type="primary" :icon="Edit" class="centered-item creation" @click="openEditor">写文章</el-button>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 <el-icon size="28" class="centered-item" style="color: gray">
@@ -31,33 +31,27 @@
                 <div class="message-card">
                   <div class="message-card-item" @click="openMessage('like')">
                     点赞
-                    <el-tag v-if="messageCount.likeCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.likeCount }}</el-tag>
+                    <el-tag v-if="messageCount.likeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.likeCount }} </el-tag>
                   </div>
                   <div class="message-card-item" @click="openMessage('comment')">
                     评论
-                    <el-tag v-if="messageCount.commentCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.commentCount }}</el-tag>
+                    <el-tag v-if="messageCount.commentCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.commentCount }} </el-tag>
                   </div>
                   <div class="message-card-item" @click="openMessage('collect')">
                     收藏
-                    <el-tag v-if="messageCount.collectCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.collectCount }}</el-tag>
+                    <el-tag v-if="messageCount.collectCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.collectCount }} </el-tag>
                   </div>
                   <div class="message-card-item" @click="openMessage('follow')">
                     关注
-                    <el-tag v-if="messageCount.followCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.followCount }}</el-tag>
+                    <el-tag v-if="messageCount.followCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.followCount }} </el-tag>
                   </div>
                   <div class="message-card-item" @click="openMessage('chat')">
                     私信
-                    <el-tag v-if="messageCount.chatCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.chatCount }}</el-tag>
+                    <el-tag v-if="messageCount.chatCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.chatCount }} </el-tag>
                   </div>
                   <div class="message-card-item" @click="openMessage('notice')">
                     通知
-                    <el-tag v-if="messageCount.noticeCount > 0" type="danger" effect="dark" round
-                      class="message-card-badge" size="small">{{ messageCount.noticeCount }}</el-tag>
+                    <el-tag v-if="messageCount.noticeCount > 0" type="danger" effect="dark" round class="message-card-badge" size="small">{{ messageCount.noticeCount }} </el-tag>
                   </div>
                 </div>
               </template>
@@ -72,9 +66,9 @@
                     <el-col :span="6">
                       <el-avatar :size="40" :src="pictureUrl + user.picId" class="centered-item avatar" />
                     </el-col>
-                    <el-col :span="18"
-                      style="display: flex;justify-content: center;align-items: center;font-weight: bold">
-                      {{ user.nickName }} </el-col>
+                    <el-col :span="18" style="display: flex; justify-content: center; align-items: center; font-weight: bold">
+                      {{ user.nickName }}
+                    </el-col>
                   </el-row>
                   <el-row>
                     <el-col :span="12">
@@ -103,10 +97,11 @@
 <script setup>
 import { ElMessage } from 'element-plus';
 import { Edit, Search } from '@element-plus/icons-vue';
-import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
+import { computed, getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 import { localStorage } from '@/utils/storage';
 import request from '@/utils/request.js';
 import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/store/modules/auth.js';
 
 const { proxy } = getCurrentInstance();
 
@@ -139,6 +134,10 @@ function isUserEmpty(obj) {
 }
 
 //登录窗口
+const showLoginForm = computed(() => useAuthStore().loginFormStatus);
+watch(showLoginForm, () => {
+  openLoginForm();
+});
 const loginFormRef = ref();
 
 const openLoginForm = () => {
@@ -171,12 +170,12 @@ let messageCount = reactive({
 const createWebSocketConnection = () => {
   let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.id);
 
-  websocket.onopen = function () { };
+  websocket.onopen = function () {};
   websocket.onmessage = function (msg) {
     Object.assign(messageCount, JSON.parse(msg.data));
   };
-  websocket.onclose = function () { };
-  websocket.onerror = function () { };
+  websocket.onclose = function () {};
+  websocket.onerror = function () {};
 };
 
 function doSearch() {
@@ -221,8 +220,8 @@ const openMessage = (type) => {
 };
 
 const openUser = (id) => {
-  window.open(window.location.origin + "/#/user/" + id);
-}
+  window.open(window.location.origin + '/#/user/' + id);
+};
 </script>
 
 <style scoped>

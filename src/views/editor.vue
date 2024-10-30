@@ -9,7 +9,7 @@
         </el-col>
     </el-row>
     <v-md-editor v-model="blog.content" height="calc(100vh - 100px)" :disabled-menus="[]" :toc-nav-position-right="true"
-        :default-show-toc="true" @upload-image="uploadImage"></v-md-editor>
+        :default-show-toc="true" @upload-image="uploadImage" :include-level="[1,2,3,4,5,6]"></v-md-editor>
     <el-dialog v-model="visible" title="发布文章" :close-on-click-modal="false" width="500">
         <el-form ref="formRef" :model="blog" :rules="rules" label-width="auto" style="max-width: 600px">
             <el-form-item label="分类" label-width="80px" prop="categoryId">

@@ -2,8 +2,7 @@
   <el-container v-loading="loading">
     <el-aside width="150px" class="aside-container left">
       <el-badge :value="blog.likeCount" :max="999">
-        <div class="left-btn" @click="debounceLike(blog.liked)"
-          :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }">
+        <div class="left-btn" :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }" @click="debounceLike(blog.liked)">
           <el-icon size="20">
             <Pointer />
           </el-icon>
@@ -17,20 +16,19 @@
         </div>
       </el-badge>
       <el-badge :value="blog.collectCount" :max="999">
-        <div class="left-btn" @click="debounceCollect(blog.id)"
-          :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }">
+        <div class="left-btn" :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }" @click="debounceCollect(blog.id)">
           <el-icon size="20">
             <Star />
           </el-icon>
         </div>
       </el-badge>
     </el-aside>
-    <el-main class="main-container" ref="blogRef">
+    <el-main ref="blogRef" class="main-container">
       <div class="title">
         <h1 style="font-size: 2.1em">{{ blog.title }}</h1>
         <div class="blog-stats">
           <div class="blog-stat-item">
-            <el-text type="info" class="author" @click="openUser(blog.authorId)"> {{ blog.authorName }}</el-text>
+            <el-text type="info" class="author" @click="openUser(blog.authorId)"> {{ blog.authorName }} </el-text>
           </div>
           <div class="blog-stat-item">
             <el-text type="info"> {{ blog.createTime }}</el-text>
@@ -60,12 +58,9 @@
           <el-statistic title="点赞数" :value="author.likeCount" />
         </div>
       </div>
-      <div class="directory-div" ref="directoryRef">
-        <div v-for="anchor in titles" :id="anchor.id" :key="anchor"
-          :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }"
-          @click="directoryClick(anchor)">
-          <div class="directory-item"
-            :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
+      <div ref="directoryRef" class="directory-div">
+        <div v-for="anchor in titles" :id="anchor.id" :key="anchor" :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" @click="directoryClick(anchor)">
+          <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
             {{ anchor.title }}
           </div>
         </div>
@@ -226,15 +221,11 @@ const favoriteRef = ref();
 
 //打开收藏夹
 const collect = (blogId) => {
-  request.get('/web/user/getAuthUser').then((result) => {
-    if (!result.data) {
-      ElMessage({
-        message: '请先登录',
-        type: 'warning',
-      });
-      return;
+  //调用接口 查询用户的收藏夹数据
+  request.get('/web/favorite/list/' + blogId).then((result) => {
+    if (result) {
+      favoriteRef.value.open(blogId, result.data);
     }
-    favoriteRef.value.open(blogId);
   });
 };
 
@@ -335,7 +326,7 @@ const openUser = (id) => {
   display: flex;
 }
 
-.blog-info>* {
+.blog-info > * {
   text-align: center;
   flex: 3;
 }

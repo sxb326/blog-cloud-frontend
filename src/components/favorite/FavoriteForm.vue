@@ -68,14 +68,12 @@ const save = () => {
     })
 }
 
-const open = (id) => {
-    blogId.value = id
-    //调用接口 查询用户的收藏夹数据
-    request.get('/web/favorite/list/' + id).then(result => {
-        list.value = result.data
-    })
-    dialogVisible.value = true
-}
+const open = (id, data) => {
+    blogId.value = id;
+    list.value = data;
+    dialogVisible.value = true;
+};
+
 defineExpose({
     open
 })
