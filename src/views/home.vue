@@ -1,24 +1,24 @@
 <template>
   <el-container>
     <el-aside width="180px" class="aside-container left">
-      <CategoryList @refresh-blog-list="refreshBlogListByCategoryId"></CategoryList>
+      <CategoryList @refresh-article-list="refreshArticleListByCategoryId"></CategoryList>
     </el-aside>
     <el-main class="main-container">
-      <BlogList ref="blogListRef"></BlogList>
+      <articleList ref="articleListRef"></articleList>
     </el-main>
     <el-aside width="220px" class="aside-container right">
     </el-aside>
   </el-container>
 </template>
 <script setup>
-import BlogList from '@/components/home/BlogList.vue';
+import articleList from '@/components/home/ArticleList.vue';
 import CategoryList from '@/components/home/CategoryList.vue';
 import { ref } from 'vue';
 
-const blogListRef = ref(null);
+const articleListRef = ref(null);
 
-const refreshBlogListByCategoryId = (categoryId) => {
-  blogListRef.value.refreshBlogListByCategoryId(categoryId);
+const refreshArticleListByCategoryId = (categoryId) => {
+  articleListRef.value.refreshArticleListByCategoryId(categoryId);
 };
 </script>
 <style>

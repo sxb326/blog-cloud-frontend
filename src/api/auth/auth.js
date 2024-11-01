@@ -7,7 +7,7 @@ export default {
    */
   getAuthUser() {
     return request({
-      url: '/web/user/getAuthUser',
+      url: '/user/getAuthUser',
       method: 'get',
     });
   },

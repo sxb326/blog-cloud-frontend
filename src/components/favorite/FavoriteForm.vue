@@ -30,7 +30,7 @@ import request from '@/utils/request.js'
 import {ElMessage} from "element-plus";
 
 const dialogVisible = ref(false)
-let blogId = ref('')
+let articleId = ref('')
 let list = ref([])
 const emit = defineEmits(['refresh-collect'])
 
@@ -52,10 +52,10 @@ const save = () => {
         favoriteId = collected.id
     }
     const param = {
-        blogId: blogId.value,
+        articleId: articleId.value,
         favoriteId: favoriteId
     }
-    request.post('/web/collect/save', param).then(result => {
+    request.post('/article/collect/save', param).then(result => {
         if (!result) {
             return;
         }
@@ -69,7 +69,7 @@ const save = () => {
 }
 
 const open = (id, data) => {
-    blogId.value = id;
+    articleId.value = id;
     list.value = data;
     dialogVisible.value = true;
 };

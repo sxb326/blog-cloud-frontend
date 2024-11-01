@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
   const meta = to.meta;
   if (meta && meta.needLogin) {
     //需要登录，校验当前是否已登录
-    request.get('/web/user/getAuthUser').then((result) => {
+    request.get('/user/getAuthUser').then((result) => {
       if (!result.data) {
         next('/home');
       } else {

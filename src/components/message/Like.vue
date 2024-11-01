@@ -11,12 +11,12 @@
                         <span class="authorSpan" @click="openUser(item.sendUserId)">{{ item.sendUserNickName }}</span>
                         <span style="color: gray;">点赞了</span>
                         <span v-if="item.commentId === null">
-                            您的文章：<span class="blogTitleSpan" @click="jumpToPreview(item.blogId)">《{{ item.blogTitle
+                            您的文章：<span class="articleTitleSpan" @click="jumpToPreview(item.articleId)">《{{ item.articleTitle
                                 }}》</span>
                         </span>
                         <span v-else>
                             您在文章
-                            <span class="blogTitleSpan" @click="jumpToPreview(item.blogId)">《{{ item.blogTitle
+                            <span class="articleTitleSpan" @click="jumpToPreview(item.articleId)">《{{ item.articleTitle
                                 }}》</span>
                             中的评论：<div class="commentContent">{{ item.commentContent }}</div>
                         </span>
@@ -60,8 +60,8 @@ const getList = () => {
     });
 };
 
-const jumpToPreview = (blogId) => {
-    window.open(window.location.origin + "/#/preview/" + blogId);
+const jumpToPreview = (articleId) => {
+    window.open(window.location.origin + "/#/preview/" + articleId);
 }
 
 const openUser = (id) => {

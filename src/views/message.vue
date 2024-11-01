@@ -108,9 +108,9 @@ watch(
   color: #84beff;
 }
 
-.blogTitleSpan {}
+.articleTitleSpan {}
 
-.blogTitleSpan:hover {
+.articleTitleSpan:hover {
   color: #84beff;
 }
 

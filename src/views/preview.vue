@@ -1,60 +1,60 @@
 <template>
   <el-container v-loading="loading">
     <el-aside width="150px" class="aside-container left">
-      <el-badge :value="blog.likeCount" :max="999">
-        <div class="left-btn" :style="{ background: blog.liked ? '#409eff' : 'white', color: blog.liked ? 'white' : 'black' }" @click="debounceLike(blog.liked)">
+      <el-badge :value="article.likeCount" :max="999">
+        <div class="left-btn" :style="{ background: article.liked ? '#409eff' : 'white', color: article.liked ? 'white' : 'black' }" @click="debounceLike(article.liked)">
           <el-icon size="20">
             <Pointer />
           </el-icon>
         </div>
       </el-badge>
-      <el-badge :value="blog.commentCount" :max="999">
-        <div class="left-btn" @click="openComment(blog.id)">
+      <el-badge :value="article.commentCount" :max="999">
+        <div class="left-btn" @click="openComment(article.id)">
           <el-icon size="20">
             <ChatLineRound />
           </el-icon>
         </div>
       </el-badge>
-      <el-badge :value="blog.collectCount" :max="999">
-        <div class="left-btn" :style="{ background: blog.collected ? '#409eff' : 'white', color: blog.collected ? 'white' : 'black' }" @click="debounceCollect(blog.id)">
+      <el-badge :value="article.collectCount" :max="999">
+        <div class="left-btn" :style="{ background: article.collected ? '#409eff' : 'white', color: article.collected ? 'white' : 'black' }" @click="debounceCollect(article.id)">
           <el-icon size="20">
             <Star />
           </el-icon>
         </div>
       </el-badge>
     </el-aside>
-    <el-main ref="blogRef" class="main-container">
+    <el-main ref="articleRef" class="main-container">
       <div class="title">
-        <h1 style="font-size: 2.1em">{{ blog.title }}</h1>
-        <div class="blog-stats">
-          <div class="blog-stat-item">
-            <el-text type="info" class="author" @click="openUser(blog.authorId)"> {{ blog.authorName }} </el-text>
+        <h1 style="font-size: 2.1em">{{ article.title }}</h1>
+        <div class="article-stats">
+          <div class="article-stat-item">
+            <el-text type="info" class="author" @click="openUser(article.authorId)"> {{ article.authorName }} </el-text>
           </div>
-          <div class="blog-stat-item">
-            <el-text type="info"> {{ blog.createTime }}</el-text>
+          <div class="article-stat-item">
+            <el-text type="info"> {{ article.createTime }}</el-text>
           </div>
-          <div class="blog-stat-item">
+          <div class="article-stat-item">
             <el-text type="info">
               <el-icon>
                 <View />
               </el-icon>
-              {{ blog.clickCount }}
+              {{ article.clickCount }}
             </el-text>
           </div>
-          <el-button v-if="blog.isAuthor" class="editBtn" type="primary" text @click="edit">编辑</el-button>
+          <el-button v-if="article.isAuthor" class="editBtn" type="primary" text @click="edit">编辑</el-button>
         </div>
       </div>
-      <v-md-preview ref="previewRef" :text="blog.content"></v-md-preview>
+      <v-md-preview ref="previewRef" :text="article.content"></v-md-preview>
     </el-main>
     <el-aside width="300px" class="aside-container right">
         <el-card shadow="never">
             <template #header>作者</template>
-            <div class="author-info" @click="openUser(blog.authorId)">
+            <div class="author-info" @click="openUser(article.authorId)">
                 <el-avatar :size="45" :src="pictureUrl + author.picId" class="centered-item avatar"/>
                 <div class="author-nick-name">{{ author.nickName }}</div>
             </div>
-            <div class="blog-info">
-                <el-statistic title="文章数" :value="author.blogCount"/>
+            <div class="article-info">
+                <el-statistic title="文章数" :value="author.articleCount"/>
                 <el-statistic title="阅读数" :value="author.clickCount"/>
                 <el-statistic title="点赞数" :value="author.likeCount"/>
             </div>
@@ -90,18 +90,18 @@ const route = useRoute();
 const router = useRouter();
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
 
-let blog = reactive({});
+let article = reactive({});
 let author = reactive({});
 let loading = ref(false);
 let titles = ref([]);
 
 //根据路径参数中的id 调用后端接口获取博客内容
-const getBlog = () => {
+const getArticle = () => {
   let id = route.params.id;
-  blog.id = id;
+  article.id = id;
   if (id) {
     loading.value = true;
-    request.get('/web/preview/' + id).then((result) => {
+    request.get('/article/preview/' + id).then((result) => {
       if (result.code === '302') {
         ElMessage({
           message: result.message,
@@ -110,10 +110,10 @@ const getBlog = () => {
         router.push('/home');
         return;
       }
-      Object.assign(blog, result.data);
+      Object.assign(article, result.data);
       nextTick(() => {
         //成功获取到文章内容，调用接口查询作者信息
-        request.get('/web/user/getUserInfo', { params: { id: blog.authorId } }).then((result) => {
+        request.get('/user/getUserInfo', { params: { id: article.authorId } }).then((result) => {
           Object.assign(author, result.data);
         });
         directoryInit();
@@ -163,12 +163,12 @@ const directoryClick = (anchor) => {
   }
 };
 
-const blogRef = ref(null);
+const articleRef = ref(null);
 const directoryRef = ref(null);
 
 //滚动事件监听
 const scrollEventListener = () => {
-  let pixel = blogRef.value.$el.scrollTop + blogRef.value.$el.offsetTop + 1;
+  let pixel = articleRef.value.$el.scrollTop + articleRef.value.$el.offsetTop + 1;
   const title = titles.value.reduce((prev, curr) => {
     if (curr.pixel <= pixel && (prev === null || pixel - curr.pixel < pixel - prev.pixel)) {
       return curr;
@@ -176,29 +176,29 @@ const scrollEventListener = () => {
     return prev;
   }, null);
   if (title) {
-    directoryRef.value.scrollTop = (directoryRef.value.scrollHeight * title.pixel) / blogRef.value.$el.scrollHeight;
+    directoryRef.value.scrollTop = (directoryRef.value.scrollHeight * title.pixel) / articleRef.value.$el.scrollHeight;
     directoryId.value = title.id;
   }
 };
 
 //注册滚动事件
 const addScrollEventListener = () => {
-  blogRef.value.$el.addEventListener('scroll', scrollEventListener);
+  articleRef.value.$el.addEventListener('scroll', scrollEventListener);
 };
 
 //销毁滚动事件
 const removeScrollEventListener = () => {
-  blogRef.value.$el.removeEventListener('scroll', scrollEventListener);
+  articleRef.value.$el.removeEventListener('scroll', scrollEventListener);
 };
 
 onMounted(() => {
-  getBlog();
+  getArticle();
   addScrollEventListener();
 });
 
 const like = (liked) => {
-  const param = { type: 1, objId: blog.id, status: !liked };
-  request.post('/web/like/save', param).then((result) => {
+  const param = { type: 1, objId: article.id, status: !liked };
+  request.post('/article/like/save', param).then((result) => {
     if (!result) {
       return;
     }
@@ -206,8 +206,8 @@ const like = (liked) => {
       message: result.message,
       type: 'success',
     });
-    blog.likeCount = result.data;
-    blog.liked = !liked;
+    article.likeCount = result.data;
+    article.liked = !liked;
   });
 };
 
@@ -216,22 +216,22 @@ const debounceLike = debounce(like, 200);
 //评论
 const commentRef = ref(null);
 
-const openComment = (blogId) => {
-  commentRef.value.open(blogId);
+const openComment = (articleId) => {
+  commentRef.value.open(articleId);
 };
 
 const refreshCommentCount = (count) => {
-  blog.commentCount = count;
+  article.commentCount = count;
 };
 
 const favoriteRef = ref();
 
 //打开收藏夹
-const collect = (blogId) => {
+const collect = (articleId) => {
   //调用接口 查询用户的收藏夹数据
-  request.get('/web/favorite/list/' + blogId).then((result) => {
+  request.get('/article/favorite/list/' + articleId).then((result) => {
     if (result) {
-      favoriteRef.value.open(blogId, result.data);
+      favoriteRef.value.open(articleId, result.data);
     }
   });
 };
@@ -240,16 +240,16 @@ const debounceCollect = debounce(collect, 200);
 
 //刷新文章收藏数
 const refreshCollect = () => {
-  request.get('/web/blog/collectCount/' + blog.id).then((result) => {
+  request.get('/article/collectCount/' + article.id).then((result) => {
     const collectCount = result.data;
-    blog.collected = collectCount >= blog.collectCount;
-    blog.collectCount = collectCount;
+    article.collected = collectCount >= article.collectCount;
+    article.collectCount = collectCount;
   });
 };
 
 //编辑文章
 const edit = () => {
-  router.push('/editor/' + blog.id);
+  router.push('/editor/' + article.id);
 };
 
 const openUser = (id) => {
@@ -322,13 +322,13 @@ const openUser = (id) => {
   cursor: pointer;
 }
 
-.blog-info {
+.article-info {
     width: 100%;
     display: flex;
     margin-top: 10px;
 }
 
-.blog-info > * {
+.article-info > * {
     text-align: center;
     flex: 3;
 }
@@ -374,11 +374,11 @@ const openUser = (id) => {
   padding: 0 32px;
 }
 
-.blog-stats {
+.article-stats {
   display: flex;
 }
 
-.blog-stat-item {
+.article-stat-item {
   display: flex;
   align-items: center;
   margin-right: 10px;

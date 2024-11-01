@@ -10,7 +10,7 @@
                     <el-col :span="23">
                         <span class="authorSpan" @click="openUser(item.sendUserId)">{{ item.sendUserNickName }}</span>
                         <span style="color: gray;">收藏了</span>
-                        您的文章：<span class="blogTitleSpan" @click="jumpToPreview(item.blogId)">《{{ item.blogTitle
+                        您的文章：<span class="articleTitleSpan" @click="jumpToPreview(item.articleId)">《{{ item.articleTitle
                             }}》</span>
                     </el-col>
                     <el-col :span="1"></el-col>
@@ -52,8 +52,8 @@ const getList = () => {
     });
 };
 
-const jumpToPreview = (blogId) => {
-    window.open(window.location.origin + "/#/preview/" + blogId);
+const jumpToPreview = (articleId) => {
+    window.open(window.location.origin + "/#/preview/" + articleId);
 }
 
 const openUser = (id) => {

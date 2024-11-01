@@ -3,18 +3,18 @@
     <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
     <el-tab-pane label="最新" name="newest"></el-tab-pane>
   </el-tabs>
-  <div v-infinite-scroll="load" v-loading="loading" class="blogList" infinite-scroll-distance="10"
+  <div v-infinite-scroll="load" v-loading="loading" class="articleList" infinite-scroll-distance="10"
     infinite-scroll-immediate="false">
-    <div v-for="item in list" :key="item.id" class="blog-background" @click="preview(item.id)">
-      <div class="blog">
-        <div class="blog-info">
-          <div class="blog-title">{{ item.title }}</div>
-          <p class="blog-summary">{{ item.summary }}</p>
-          <div class="blog-stats">
-            <div class="blog-stat-item">
+    <div v-for="item in list" :key="item.id" class="article-background" @click="preview(item.id)">
+      <div class="article">
+        <div class="article-info">
+          <div class="article-title">{{ item.title }}</div>
+          <p class="article-summary">{{ item.summary }}</p>
+          <div class="article-status">
+            <div class="article-stat-item">
               <el-text type="info" class="author" @click.stop="openUser(item.authorId)">{{ item.authorName }}</el-text>
             </div>
-            <div class="blog-stat-item">
+            <div class="article-stat-item">
               <el-text type="info">
                 <el-icon>
                   <View />
@@ -22,7 +22,7 @@
                 {{ item.clickCount }}
               </el-text>
             </div>
-            <div class="blog-stat-item">
+            <div class="article-stat-item">
               <el-text type="info">
                 <el-icon>
                   <Pointer />
@@ -30,7 +30,7 @@
                 {{ item.likeCount }}
               </el-text>
             </div>
-            <div class="blog-stat-item">
+            <div class="article-stat-item">
               <el-text type="info">
                 <el-icon>
                   <Star />
@@ -38,12 +38,12 @@
                 {{ item.collectCount }}
               </el-text>
             </div>
-            <div class="blog-stat-item">
+            <div class="article-stat-item">
               <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
             </div>
           </div>
         </div>
-        <div class="blog-cover" v-if="item.picId !== null">
+        <div class="article-cover" v-if="item.picId !== null">
           <img :src="imgUrl + item.picId" style="width: 120px; height: 80px" />
         </div>
       </div>
@@ -74,7 +74,7 @@ const tabChange = (tabName) => {
 const getList = () => {
   loading.value = true;
   request
-    .get("/web/home/list", {
+    .get("/article/home/list", {
       params: {
         page: page.value,
         categoryId: category.value,
@@ -103,7 +103,7 @@ const preview = (id) => {
   window.open(window.location.origin + "/#/preview/" + id);
 };
 
-const refreshBlogListByCategoryId = (categoryId) => {
+const refreshArticleListByCategoryId = (categoryId) => {
   category.value = categoryId;
   orderType.value = "recommend";
   page.value = 1;
@@ -115,7 +115,7 @@ const openUser = (id) => {
   window.open(window.location.origin + "/#/user/" + id);
 }
 
-defineExpose({ refreshBlogListByCategoryId });
+defineExpose({ refreshArticleListByCategoryId });
 </script>
 
 <style>
@@ -137,17 +137,17 @@ defineExpose({ refreshBlogListByCategoryId });
   padding: 5px 0 0 5px;
 }
 
-.blogList {
+.articleList {
   overflow: auto;
   height: calc(100vh - 170px);
   padding: 0 5px;
 }
 
-.blog-background:hover {
+.article-background:hover {
   background-color: #f2f3f5;
 }
 
-.blog {
+.article {
   cursor: pointer;
   display: flex;
   margin: 0 0.5rem;
@@ -155,14 +155,14 @@ defineExpose({ refreshBlogListByCategoryId });
   border-bottom: 1px solid #edeeef;
 }
 
-.blog-info {
+.article-info {
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.blog-title {
+.article-title {
   font-size: 16px;
   font-weight: bold;
   white-space: nowrap;
@@ -170,7 +170,7 @@ defineExpose({ refreshBlogListByCategoryId });
   text-overflow: ellipsis;
 }
 
-.blog-summary {
+.article-summary {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -178,11 +178,11 @@ defineExpose({ refreshBlogListByCategoryId });
   color: #8a919f;
 }
 
-.blog-stats {
+.article-status {
   display: flex;
 }
 
-.blog-stat-item {
+.article-stat-item {
   display: flex;
   align-items: center;
   margin-right: 10px;
@@ -190,19 +190,19 @@ defineExpose({ refreshBlogListByCategoryId });
   color: darkgray;
 }
 
-.blog-stat-item span {
+.article-stat-item span {
   margin-right: 5px;
 }
 
-.blog-stat-item:last-child {
+.article-stat-item:last-child {
   margin-left: auto;
 }
 
-.blog-cover {
+.article-cover {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.blog-cover img {
+.article-cover img {
   width: 100px;
   height: auto;
 }

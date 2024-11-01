@@ -6,17 +6,17 @@
         <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇</div>
         <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
           infinite-scroll-immediate="false">
-          <div class="blog-background" v-for="item in list" :key="item.id" @click="preview(item.id)">
-            <div class="blog">
-              <div class="blog-info">
-                <div class="blog-title" v-html="item.title"></div>
-                <p class="blog-summary">{{ item.summary }}</p>
-                <div class="blog-stats">
-                  <div class="blog-stat-item">
+          <div class="article-background" v-for="item in list" :key="item.id" @click="preview(item.id)">
+            <div class="article">
+              <div class="article-info">
+                <div class="article-title" v-html="item.title"></div>
+                <p class="article-summary">{{ item.summary }}</p>
+                <div class="article-stats">
+                  <div class="article-stat-item">
                     <el-text type="info" class="author" @click.stop="openUser(item.authorId)">{{ item.authorName
                       }}</el-text>
                   </div>
-                  <div class="blog-stat-item">
+                  <div class="article-stat-item">
                     <el-text type="info">
                       <el-icon>
                         <View />
@@ -24,7 +24,7 @@
                       {{ item.clickCount }}
                     </el-text>
                   </div>
-                  <div class="blog-stat-item">
+                  <div class="article-stat-item">
                     <el-text type="info">
                       <el-icon>
                         <Pointer />
@@ -32,7 +32,7 @@
                       {{ item.likeCount }}
                     </el-text>
                   </div>
-                  <div class="blog-stat-item">
+                  <div class="article-stat-item">
                     <el-text type="info">
                       <el-icon>
                         <Star />
@@ -40,7 +40,7 @@
                       {{ item.collectCount }}
                     </el-text>
                   </div>
-                  <div class="blog-stat-item">
+                  <div class="article-stat-item">
                     <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ onMounted(() => {
   background-color: #fff;
 }
 
-.blog {
+.article {
   cursor: pointer;
   display: flex;
   margin: 0 0.5rem;
@@ -170,18 +170,18 @@ onMounted(() => {
   border-bottom: 1px solid #edeeef;
 }
 
-.blog-background:hover {
+.article-background:hover {
   background-color: #f2f3f5;
 }
 
-.blog-info {
+.article-info {
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.blog-title {
+.article-title {
   font-size: 16px;
   font-weight: bold;
   white-space: nowrap;
@@ -189,7 +189,7 @@ onMounted(() => {
   text-overflow: ellipsis;
 }
 
-.blog-summary {
+.article-summary {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -197,11 +197,11 @@ onMounted(() => {
   color: #8a919f;
 }
 
-.blog-stats {
+.article-stats {
   display: flex;
 }
 
-.blog-stat-item {
+.article-stat-item {
   display: flex;
   align-items: center;
   margin-right: 10px;
@@ -209,11 +209,11 @@ onMounted(() => {
   color: darkgray;
 }
 
-.blog-stat-item span {
+.article-stat-item span {
   margin-right: 5px;
 }
 
-.blog-stat-item:last-child {
+.article-stat-item:last-child {
   margin-left: auto;
 }
 

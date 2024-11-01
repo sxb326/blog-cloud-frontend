@@ -7,7 +7,7 @@
                     style="margin-top: 15px" />
             </el-col>
             <el-col :span="21">
-                <CommentBox style="margin-bottom: 20px" :blog-id="blogId" :parent-id="'0'" :reply-to-id="''"
+                <CommentBox style="margin-bottom: 20px" :article-id="articleId" :parent-id="'0'" :reply-to-id="''"
                     :comment-placeholder="'评论一下吧'" @refresh-comment="refreshComment"></CommentBox>
             </el-col>
         </el-row>
@@ -27,14 +27,14 @@
                         <el-row class="content">{{ item.content }}</el-row>
                         <el-row class="bottom">
                             <el-col :span="7">{{ item.createTime }}</el-col>
-                            <el-col :span="2" class="blog-stat-item">
+                            <el-col :span="2" class="article-stat-item">
                                 <span :style="{ color: item.liked ? '#409eff' : '' }">
                                     <el-icon class="stat-icon" @click="debounceLike(item.id, item.liked, index)">
                                         <Pointer />
                                     </el-icon></span>
                                 <span>{{ item.likeCount }}</span>
                             </el-col>
-                            <el-col :span="2" class="blog-stat-item">
+                            <el-col :span="2" class="article-stat-item">
                                 <span :style="{ color: item.showBox ? '#409eff' : '' }"><el-icon class="stat-icon"
                                         @click="debounceComment(item.showBox, index)">
                                         <ChatLineRound />
@@ -42,7 +42,7 @@
                                 <span>{{ item.commentCount }}</span>
                             </el-col>
                         </el-row>
-                        <CommentBox v-if="item.showBox" :blog-id="blogId" :parent-id="item.id" :reply-to-id="''"
+                        <CommentBox v-if="item.showBox" :article-id="articleId" :parent-id="item.id" :reply-to-id="''"
                             :comment-placeholder="'回复 ' + item.userNickName + '：'" @refresh-comment="refreshComment">
                         </CommentBox>
                         <div v-if="item.subComments.length > 0" class="level2Comment">
@@ -71,7 +71,7 @@
                                     </el-row>
                                     <el-row class="bottom">
                                         <el-col :span="7">{{ sub.createTime }}</el-col>
-                                        <el-col :span="2" class="blog-stat-item">
+                                        <el-col :span="2" class="article-stat-item">
                                             <span :style="{ color: sub.liked ? '#409eff' : '' }">
                                                 <el-icon class="stat-icon"
                                                     @click="debounceLike(sub.id, sub.liked, index, si)">
@@ -80,7 +80,7 @@
                                             </span>
                                             <span>{{ sub.likeCount }}</span>
                                         </el-col>
-                                        <el-col :span="2" class="blog-stat-item">
+                                        <el-col :span="2" class="article-stat-item">
                                             <span :style="{ color: sub.showBox ? '#409eff' : '' }">
                                                 <el-icon class="stat-icon"
                                                     @click="debounceComment(sub.showBox, index, si)">
@@ -91,7 +91,7 @@
                                         </el-col>
                                         <el-col :span="10"></el-col>
                                     </el-row>
-                                    <CommentBox v-if="sub.showBox" :blog-id="blogId" :parent-id="item.id"
+                                    <CommentBox v-if="sub.showBox" :article-id="articleId" :parent-id="item.id"
                                         :reply-to-id="sub.id" :comment-placeholder="'回复 ' + sub.userNickName + '：'"
                                         @refresh-comment="refreshComment"></CommentBox>
                                 </el-col>
@@ -116,7 +116,7 @@ const drawerVisible = ref(false)
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + "/picture/");
 const picId = localStorage.get("BLOG_USER") ? localStorage.get("BLOG_USER").picId : ''
 
-let blogId = ref('')
+let articleId = ref('')
 let count = ref(0)
 let page = ref(1)
 let data = ref([])
@@ -128,14 +128,14 @@ const load = () => {
 }
 
 const open = (id) => {
-    blogId.value = id
+    articleId.value = id
     getData()
     drawerVisible.value = true
 }
 
 const getData = () => {
     loading.value = true
-    request.get('/web/preview/comment/' + blogId.value + '/' + page.value).then(result => {
+    request.get('/article/preview/comment/' + articleId.value + '/' + page.value).then(result => {
         count.value = result.data.count
         data.value.push(...result.data.data)
         loading.value = false
@@ -153,7 +153,7 @@ const closed = () => {
 
 const like = (id, liked, x, y) => {
     const param = { type: 2, objId: id, status: !liked }
-    request.post('/web/like/save', param).then(result => {
+    request.post('/article/like/save', param).then(result => {
         if (!result) {
             return;
         }
@@ -215,14 +215,14 @@ const refreshComment = () => {
             data.value[x].showBox = false
         }
         //根据父评论id重新获取评论数据
-        request.get('/web/comment/' + blogId.value + "/" + data.value[x].id).then(result => {
+        request.get('/article/comment/' + articleId.value + "/" + data.value[x].id).then(result => {
             data.value[x] = result.data.data[0]
             count.value = result.data.count
             emit('refresh-comment-count', result.data.count)
         })
     } else {
         page.value = 1
-        request.get('/web/preview/comment/' + blogId.value + '/' + page.value).then(result => {
+        request.get('/article/preview/comment/' + articleId.value + '/' + page.value).then(result => {
             data.value = result.data.data
             count.value = result.data.count
             emit('refresh-comment-count', result.data.count)
@@ -276,7 +276,7 @@ defineExpose({
     color: #84beff;
 }
 
-.blog-stat-item {
+.article-stat-item {
     display: flex;
     align-items: center;
     margin-right: 20px;
@@ -284,7 +284,7 @@ defineExpose({
     color: darkgray;
 }
 
-.blog-stat-item span {
+.article-stat-item span {
     margin-right: 1px;
 }
 </style>

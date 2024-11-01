@@ -21,7 +21,7 @@ import request from "@/utils/request.js";
 import { onMounted, ref } from "vue";
 import * as icons from "@element-plus/icons-vue";
 
-const emit = defineEmits(["refresh-blog-list"]);
+const emit = defineEmits(["refresh-article-list"]);
 
 let categoryId = ref("");
 let list = ref([]);
@@ -31,7 +31,7 @@ const getIcon = (icon) => {
 }
 
 const getList = () => {
-  request.get("/web/home/category").then((result) => {
+  request.get("/article/home/category").then((result) => {
     list.value.push({ id: "", name: "综合", icon: 'Discount' });
     list.value.push(...result.data);
   });
@@ -39,7 +39,7 @@ const getList = () => {
 
 const categoryChange = (id) => {
   categoryId.value = id;
-  emit("refresh-blog-list", id);
+  emit("refresh-article-list", id);
 };
 
 onMounted(() => {

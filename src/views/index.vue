@@ -197,6 +197,7 @@ function doSearch() {
 
 //注销
 const logout = () => {
+  localStorage.remove('BLOG_USER');
   localStorage.remove('BLOG_TOKEN');
   ElMessage({
     message: '注销成功',
@@ -206,7 +207,7 @@ const logout = () => {
 };
 
 const openEditor = () => {
-  request.get('/web/blog/id').then((result) => {
+  request.get('/article/id').then((result) => {
     window.open(window.location.origin + '/#/editor/' + result.data);
   });
 };

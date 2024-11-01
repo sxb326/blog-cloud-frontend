@@ -1,24 +1,24 @@
 <template>
     <el-row v-loading.fullscreen.lock="loading" class="rowDiv">
         <el-col :span="20">
-            <el-input v-model="blog.title" size="large" placeholder="请输入文章标题"></el-input>
+            <el-input v-model="article.title" size="large" placeholder="请输入文章标题"></el-input>
         </el-col>
         <el-col :span="4" class="btnDiv">
             <el-button type="warning" plain @click="saveDraft">保存草稿</el-button>
             <el-button type="primary" @click="publish">发布文章</el-button>
         </el-col>
     </el-row>
-    <v-md-editor v-model="blog.content" height="calc(100vh - 100px)" :disabled-menus="[]" :toc-nav-position-right="true"
+    <v-md-editor v-model="article.content" height="calc(100vh - 100px)" :disabled-menus="[]" :toc-nav-position-right="true"
         :default-show-toc="true" @upload-image="uploadImage" :include-level="[1,2,3,4,5,6]"></v-md-editor>
     <el-dialog v-model="visible" title="发布文章" :close-on-click-modal="false" width="500">
-        <el-form ref="formRef" :model="blog" :rules="rules" label-width="auto" style="max-width: 600px">
+        <el-form ref="formRef" :model="article" :rules="rules" label-width="auto" style="max-width: 600px">
             <el-form-item label="分类" label-width="80px" prop="categoryId">
-                <el-select v-model="blog.categoryId" placeholder="选择分类" style="width: 240px">
+                <el-select v-model="article.categoryId" placeholder="选择分类" style="width: 240px">
                     <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
             <el-form-item label="标签" label-width="80px" prop="tagIds">
-                <el-select v-model="blog.tagIds" placeholder="选择标签" style="width: 240px" multiple multiple-limit="3">
+                <el-select v-model="article.tagIds" placeholder="选择标签" style="width: 240px" multiple multiple-limit="3">
                     <el-option v-for="item in tags" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -31,7 +31,7 @@
                 </el-upload>
             </el-form-item>
             <el-form-item label="简介" label-width="80px" prop="summary">
-                <el-input v-model="blog.summary" style="width: 240px" :rows="2" type="textarea" placeholder="请输入简介"
+                <el-input v-model="article.summary" style="width: 240px" :rows="2" type="textarea" placeholder="请输入简介"
                     maxlength="100" />
             </el-form-item>
             <el-form-item>
@@ -47,7 +47,7 @@ import { useRoute, useRouter } from 'vue-router';
 import request from '@/utils/request.js'
 import { ElMessage } from "element-plus";
 
-let blog = reactive({});
+let article = reactive({});
 
 const route = useRoute();
 const router = useRouter();
@@ -65,7 +65,7 @@ let categories = ref([]);
 let tags = ref([]);
 
 const publish = () => {
-    if (!blog.title || !blog.content) {
+    if (!article.title || !article.content) {
         ElMessage({
             message: '标题或正文不能为空',
             type: 'warning',
@@ -73,13 +73,13 @@ const publish = () => {
         return false;
     }
     //获取分类、标签数据
-    request.get('/web/category/list').then(result => {
+    request.get('/article/category/list').then(result => {
         categories.value = result.data;
     })
-    request.get('/web/tag/list').then(result => {
+    request.get('/article/tag/list').then(result => {
         tags.value = result.data;
     })
-    blog.summary = blog.content.substring(0, 100);
+    article.summary = article.content.substring(0, 100);
     visible.value = true;
 }
 
@@ -91,7 +91,7 @@ const doPublish = () => {
         if (!valid) {
             return false;
         }
-        request.post('/web/blog/publish', blog).then(result => {
+        request.post('/article/publish', article).then(result => {
             ElMessage({
                 message: result.message,
                 type: 'success',
@@ -110,15 +110,15 @@ const upload = (file) => {
             'Content-Type': 'multipart/form-data'
         }
     }).then(result => {
-        blog.picId = result.data;
+        article.picId = result.data;
         coverList.value = []
-        coverList.value.push({ name: 'cover-' + blog.picId, url: imgUrl + blog.picId })
+        coverList.value.push({ name: 'cover-' + article.picId, url: imgUrl + article.picId })
     });
 }
 
 //删除封面图片
 const deletePic = () => {
-    blog.picId = ''
+    article.picId = ''
 }
 
 const rules = reactive({
@@ -128,12 +128,12 @@ const rules = reactive({
 })
 
 //根据路径参数中的id 调用后端接口获取博客内容
-const getBlog = () => {
+const getArticle = () => {
     let id = route.params.id;
-    blog.id = id;
+    article.id = id;
     if (id) {
         loading.value = true
-        request.get('/web/blog/' + id).then(result => {
+        request.get('/article/' + id).then(result => {
             if (result.code === '302') {
                 ElMessage({
                     message: result.message,
@@ -142,9 +142,9 @@ const getBlog = () => {
                 router.push('/home')
                 return;
             }
-            Object.assign(blog, result.data);
-            if (blog.picId) {
-                coverList.value.push({ name: 'cover-' + blog.picId, url: imgUrl + blog.picId })
+            Object.assign(article, result.data);
+            if (article.picId) {
+                coverList.value.push({ name: 'cover-' + article.picId, url: imgUrl + article.picId })
             }
             loading.value = false
         })
@@ -153,15 +153,15 @@ const getBlog = () => {
 
 //保存草稿
 const saveDraft = () => {
-    if (!blog.title || !blog.content) {
+    if (!article.title || !article.content) {
         ElMessage({
             message: '标题或正文不能为空',
             type: 'warning',
         });
         return false;
     }
-    request.post('/web/draft/save', blog).then(result => {
-        blog.id = result.data
+    request.post('/article/draft/save', article).then(result => {
+        article.id = result.data
         ElMessage({
             message: result.message,
             type: 'success',
@@ -182,7 +182,7 @@ let coverList = ref([])
 
 //按下保存时的监听
 onMounted(() => {
-    getBlog();
+    getArticle();
     saveKeyListener.value = window.addEventListener('keydown', handleSaveKeydown);
 })
 
