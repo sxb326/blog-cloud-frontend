@@ -32,8 +32,7 @@ const getIcon = (icon) => {
 
 const getList = () => {
   request.get("/article/home/category").then((result) => {
-    list.value.push({ id: "", name: "综合", icon: 'Discount' });
-    list.value.push(...result.data);
+    list.value = result.data;
   });
 };
 
@@ -54,7 +53,7 @@ onMounted(() => {
   align-items: center;
   min-height: 50px;
   cursor: pointer;
-  margin: 10px;
+  margin: 10px 5px;
 }
 
 .category:hover {
