@@ -74,7 +74,7 @@ const tabChange = (tabName) => {
 const getList = () => {
   loading.value = true;
   request
-    .get("/article/home/list", {
+    .get("/search/list", {
       params: {
         page: page.value,
         categoryId: category.value,
