@@ -73,7 +73,7 @@ const tabChange = (tabName) => {
 const getList = () => {
   loading.value = true;
   request
-    .get('/article/preview/listByUser', {
+    .get('/search/listByUser', {
       params: {
         page: page.value,
         userId: userId,

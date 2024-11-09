@@ -31,8 +31,9 @@ const getIcon = (icon) => {
 }
 
 const getList = () => {
-  request.get("/article/home/category").then((result) => {
-    list.value = result.data;
+  request.get("/article/category/list").then((result) => {
+      list.value.push({ id: "", name: "全部", icon: 'HomeFilled' });
+      list.value.push(...result.data);
   });
 };
 
