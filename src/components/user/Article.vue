@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 10px 0 5px 20px">
-    <el-button size="small" :type="orderType === 'recommend' ? 'primary' : 'info'" plain round @click="tabChange('recommend')">推荐 </el-button>
-    <el-button size="small" :type="orderType === 'newest' ? 'primary' : 'info'" plain round @click="tabChange('newest')">最新 </el-button>
+    <el-button size="small" :type="orderType === 'recommend' ? 'primary' : 'info'" plain round @click="tabChange('recommend')">热门</el-button>
+    <el-button size="small" :type="orderType === 'newest' ? 'primary' : 'info'" plain round @click="tabChange('newest')">最新</el-button>
   </div>
   <div v-infinite-scroll="load" v-loading="loading" class="articleList" infinite-scroll-distance="10" infinite-scroll-immediate="false">
     <div v-for="item in list" :key="item.id" class="article-background" @click="preview(item.id)">
