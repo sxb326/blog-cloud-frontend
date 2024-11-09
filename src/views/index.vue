@@ -16,7 +16,7 @@
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button v-if="isUserEmpty(user)" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
+          <el-button v-if="user === null" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
           <div v-else class="centered-container">
             <el-button type="primary" :icon="Edit" class="centered-item creation" @click="openEditor">写文章</el-button>
             <el-dropdown trigger="click">
@@ -110,27 +110,18 @@ onMounted(getAuthUser);
 const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
 
 //获取登录用户头像id
-let user = reactive({});
+let user = computed(() => useAuthStore().authUser);
 
 //获取当前登录用户
 async function getAuthUser() {
   const response = await proxy.$api.auth.getAuthUser();
   if (response.data) {
-    Object.assign(user, response.data);
-    localStorage.set('BLOG_USER', response.data);
+    useAuthStore().setAuthUser(response.data);
     createWebSocketConnection();
   } else {
-    for (const key in user) {
-      if (Object.prototype.hasOwnProperty.call(user, key)) {
-        delete user[key];
-      }
-    }
+    useAuthStore().clearAuthUser();
+    localStorage.remove('BLOG_TOKEN');
   }
-}
-
-//判断用户对象是否为空
-function isUserEmpty(obj) {
-  return Object.keys(obj).length === 0;
 }
 
 //登录窗口
@@ -168,7 +159,7 @@ let messageCount = reactive({
 });
 
 const createWebSocketConnection = () => {
-  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.id);
+  let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.value.id);
 
   websocket.onopen = function () {};
   websocket.onmessage = function (msg) {
@@ -197,7 +188,7 @@ function doSearch() {
 
 //注销
 const logout = () => {
-  localStorage.remove('BLOG_USER');
+  useAuthStore().clearAuthUser();
   localStorage.remove('BLOG_TOKEN');
   ElMessage({
     message: '注销成功',

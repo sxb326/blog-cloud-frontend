@@ -9,9 +9,8 @@
               <el-avatar :size="45" :src="imgUrl + author.picId" class="centered-item avatar" />
               <div class="author-nick-name">{{ author.nickName }}</div>
             </div>
-            <div v-if="authUser === null || (author.id !== authUser.id)" class="author-btn">
-              <el-button v-if="author.isFollow === true" size="large" plain type="primary"
-                @click="follow">已关注</el-button>
+            <div v-if="authUser === null || author.id !== authUser.id" class="author-btn">
+              <el-button v-if="author.isFollow === true" size="large" plain type="primary" @click="follow">已关注</el-button>
               <el-button v-else size="large" type="primary" @click="follow">关注</el-button>
               <el-button size="large" :icon="ChatLineSquare" type="primary" plain @click="chat">私信</el-button>
             </div>
@@ -53,22 +52,21 @@
       </el-card>
       <el-card shadow="never" class="right-follow">
         <template #header> 粉丝&关注 </template>
-        <div style="width: 100%;display: flex;">
-          <el-statistic style="flex: 5;text-align: center;" title="粉丝数" :value="author.followerCount" />
-          <el-statistic style="flex: 5;text-align: center;" title="关注数" :value="author.followingCount" />
+        <div style="width: 100%; display: flex">
+          <el-statistic style="flex: 5; text-align: center" title="粉丝数" :value="author.followerCount" />
+          <el-statistic style="flex: 5; text-align: center" title="关注数" :value="author.followingCount" />
         </div>
       </el-card>
     </div>
-
   </el-container>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import {computed, onMounted, reactive, ref} from 'vue';
 import request from '@/utils/request.js';
 import { useRoute, useRouter } from 'vue-router';
 import { ChatLineSquare } from '@element-plus/icons-vue';
-import { localStorage } from '@/utils/storage';
 import { ElMessage } from 'element-plus';
+import { useAuthStore } from '@/store/modules/auth.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -79,7 +77,7 @@ const type = route.name;
 
 let loading = ref(false);
 let author = reactive({});
-let authUser = localStorage.get('BLOG_USER');
+let authUser = computed(() => useAuthStore().authUser);
 
 const getUserInfo = () => {
   loading.value = true;
@@ -186,7 +184,7 @@ onMounted(() => {
   margin-left: auto;
 }
 
-.author-btn>* {
+.author-btn > * {
   width: 90px;
 }
 
