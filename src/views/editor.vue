@@ -35,7 +35,7 @@
                     maxlength="100" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="doPublish">发布</el-button>
+                <el-button type="primary" :loading="saveLoading" @click="doPublish">发布</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -54,6 +54,7 @@ const router = useRouter();
 
 //初始化时加载
 let loading = ref(false)
+let saveLoading = ref(false);
 
 //发布文章弹窗
 let visible = ref(false);
@@ -91,7 +92,9 @@ const doPublish = () => {
         if (!valid) {
             return false;
         }
+        saveLoading.value = true;
         request.post('/article/publish', article).then(result => {
+            saveLoading.value = false;
             ElMessage({
                 message: result.message,
                 type: 'success',
