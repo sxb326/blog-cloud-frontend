@@ -21,19 +21,19 @@
             </el-row>
             <el-row class="content">{{ item.content }}</el-row>
             <el-row class="bottom">
-              <el-col :span="7">{{ item.createTime }}</el-col>
-              <el-col :span="2" class="article-stat-item">
+              {{ item.createTime }}
+              <div class="article-stat-item">
                 <span :style="{ color: item.liked ? '#409eff' : '' }">
                   <el-icon class="stat-icon" @click="debounceLike(item.id, item.liked, index)"> <Pointer /> </el-icon
                 ></span>
                 <span>{{ item.likeCount }}</span>
-              </el-col>
-              <el-col :span="2" class="article-stat-item">
+              </div>
+              <div class="article-stat-item">
                 <span :style="{ color: item.showBox ? '#409eff' : '' }"
                   ><el-icon class="stat-icon" @click="debounceComment(item.showBox, index)"> <ChatLineRound /> </el-icon
                 ></span>
                 <span>{{ item.commentCount }}</span>
-              </el-col>
+              </div>
             </el-row>
             <CommentBox v-if="item.showBox" :article-id="articleId" :parent-id="item.id" :reply-to-id="''" :comment-placeholder="'回复 ' + item.userNickName + '：'" @refresh-comment="refreshComment">
             </CommentBox>
@@ -235,6 +235,11 @@ defineExpose({
 });
 </script>
 
+<style>
+.el-drawer__header {
+  margin-bottom: 0px !important;
+}
+</style>
 <style scoped>
 .comment {
   margin-bottom: 15px;
@@ -275,12 +280,12 @@ defineExpose({
 .article-stat-item {
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  margin-left: 10px;
   font-size: 14px;
   color: darkgray;
 }
 
 .article-stat-item span {
-  margin-right: 1px;
+  margin-left: 1px;
 }
 </style>
