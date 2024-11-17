@@ -17,13 +17,11 @@ export const constantRoutes = [
       {
         path: '/search/:keyword',
         component: () => import('@/views/search.vue'),
-        meta: { title: '检索' },
       },
       {
         path: '/message',
         component: () => import('@/views/message.vue'),
         redirect: { name: 'like' },
-        meta: { title: '消息' },
         children: [
           { name: 'like', path: 'like', component: () => import('@/components/message/Like.vue') },
           { name: 'comment', path: 'comment', component: () => import('@/components/message/Comment.vue') },
@@ -37,7 +35,6 @@ export const constantRoutes = [
         path: '/user/:id',
         component: () => import('@/views/user.vue'),
         redirect: { name: 'article' },
-        meta: { title: '用户' },
         children: [
           { name: 'article', path: 'article', component: () => import('@/components/user/Article.vue') },
           { name: 'column', path: 'column', component: () => import('@/components/user/Column.vue') },

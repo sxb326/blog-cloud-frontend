@@ -42,31 +42,62 @@
 import { watch, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import request from '@/utils/request.js';
+import { useTitleStore } from '@/store/modules/title.js';
+
 const route = useRoute();
 const router = useRouter();
 
-let type = ref(route.name)
+let type = ref(route.name);
 
 //页面变更回调
 const tabChange = (tabName) => {
-  router.replace(tabName)
+  router.replace(tabName);
 };
 
-let count = ref([0, 0, 0, 0, 0, 0])
+let count = ref([0, 0, 0, 0, 0, 0]);
 
 const getCount = () => {
-  request.get('/message/counts').then(result => {
-    count.value = result.data
-  })
-}
+  request.get('/message/counts').then((result) => {
+    count.value = result.data;
+  });
+};
+
+const changeTitle = (fullPath) => {
+  let arr = fullPath.split('/');
+  let type = arr[arr.length - 1].split('?')[0];
+  let title = '';
+  switch (type) {
+    case 'like':
+      title = '点赞 - 消息';
+      break;
+    case 'comment':
+      title = '评论 - 消息';
+      break;
+    case 'collect':
+      title = '收藏 - 消息';
+      break;
+    case 'follow':
+      title = '关注 - 消息';
+      break;
+    case 'chat':
+      title = '私信 - 消息';
+      break;
+    case 'notice':
+      title = '通知 - 消息';
+      break;
+  }
+  useTitleStore().setTitle(title);
+};
 
 watch(
-  () => route.fullPath, // 返回要监听的响应式引用  
-  () => {
+  () => route.fullPath, // 返回要监听的响应式引用
+  (fullPath) => {
+    changeTitle(fullPath);
     setTimeout(() => {
-      getCount()
+      getCount();
     }, 100);
-  }, { immediate: true }
+  },
+  { immediate: true },
 );
 </script>
 <style>
@@ -108,7 +139,8 @@ watch(
   color: #84beff;
 }
 
-.articleTitleSpan {}
+.articleTitleSpan {
+}
 
 .articleTitleSpan:hover {
   color: #84beff;

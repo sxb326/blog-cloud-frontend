@@ -4,8 +4,7 @@
     <el-main class="search-main">
       <div v-loading="loading">
         <div class="total">查询到包含关键字"{{ keyword }}"的文章有{{ total }}篇</div>
-        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10"
-          infinite-scroll-immediate="false">
+        <div v-if="total > 0" class="list" v-infinite-scroll="load" infinite-scroll-distance="10" infinite-scroll-immediate="false">
           <div class="article-background" v-for="item in list" :key="item.id" @click="preview(item.id)">
             <div class="article">
               <div class="article-info">
@@ -13,8 +12,9 @@
                 <p class="article-summary">{{ item.summary }}</p>
                 <div class="article-stats">
                   <div class="article-stat-item">
-                    <el-text type="info" class="author" @click.stop="openUser(item.authorId)">{{ item.authorName
-                      }}</el-text>
+                    <el-text type="info" class="author" @click.stop="openUser(item.authorId)">
+                      {{ item.authorName }}
+                    </el-text>
                   </div>
                   <div class="article-stat-item">
                     <el-text type="info">
@@ -41,7 +41,7 @@
                     </el-text>
                   </div>
                   <div class="article-stat-item">
-                    <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }}</el-tag>
+                    <el-tag v-for="tag in item.tagNameList" :key="tag" type="info">{{ tag }} </el-tag>
                   </div>
                 </div>
               </div>
@@ -61,6 +61,7 @@
 import { ref, onMounted } from 'vue';
 import request from '@/utils/request.js';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { useTitleStore } from '@/store/modules/title.js';
 
 const imgUrl = import.meta.env.VITE_IMG_URL;
 const route = useRoute();
@@ -85,6 +86,8 @@ const getList = () => {
       params: { keyword: keyword, page: page.value },
     })
     .then((result) => {
+      //设置Title
+      useTitleStore().setTitle(keyword + ' - 搜索');
       total.value = result.data.total;
       list.value.push(...result.data.list);
       loading.value = false;
@@ -112,8 +115,8 @@ onBeforeRouteUpdate((route) => {
 });
 
 const openUser = (id) => {
-  window.open(window.location.origin + "/#/user/" + id);
-}
+  window.open(window.location.origin + '/#/user/' + id);
+};
 
 onMounted(() => {
   search();
@@ -225,7 +228,8 @@ onMounted(() => {
   margin: 0.6rem 0.8rem 0 0.8rem;
 }
 
-.author {}
+.author {
+}
 
 .author:hover {
   color: #409eff;

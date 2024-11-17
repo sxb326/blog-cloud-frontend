@@ -10,9 +10,9 @@
               <div class="author-nick-name">{{ author.nickName }}</div>
             </div>
             <div v-if="authUser === null || author.id !== authUser.id" class="author-btn">
-              <el-button v-if="author.isFollow === true" size="large" plain type="primary" @click="follow">已关注</el-button>
+              <el-button v-if="author.isFollow === true" size="large" plain type="primary" @click="follow">已关注 </el-button>
               <el-button v-else size="large" type="primary" @click="follow">关注</el-button>
-              <el-button size="large" :icon="ChatLineSquare" type="primary" plain @click="chat">私信</el-button>
+              <el-button size="large" :icon="ChatLineSquare" type="primary" plain @click="chat">私信 </el-button>
             </div>
           </div>
         </div>
@@ -61,12 +61,13 @@
   </el-container>
 </template>
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import request from '@/utils/request.js';
 import { useRoute, useRouter } from 'vue-router';
 import { ChatLineSquare } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useAuthStore } from '@/store/modules/auth.js';
+import { useTitleStore } from '@/store/modules/title.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -83,6 +84,8 @@ const getUserInfo = () => {
   loading.value = true;
   request.get('/user/getUserInfo', { params: { id: userId } }).then((result) => {
     Object.assign(author, result.data);
+    //设置Title
+    useTitleStore().setTitle(author.nickName + ' - 个人主页');
   });
   loading.value = false;
 };
