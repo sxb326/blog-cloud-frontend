@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import request from '@/utils/request.js';
+import { useTitleStore } from '@/store/modules/title.js';
 
 // 本地静态路由
 export const constantRoutes = [
@@ -12,7 +13,6 @@ export const constantRoutes = [
       {
         path: '/preview/:id',
         component: () => import('@/views/preview.vue'),
-        meta: { title: '看文章' },
       },
       {
         path: '/search/:keyword',
@@ -82,10 +82,9 @@ router.beforeEach((to, from, next) => {
 
 //后置路由守卫
 router.afterEach((to) => {
+  const userTitleStore = useTitleStore();
   if (to.meta && to.meta.title) {
-    document.title = to.meta.title;
-  } else {
-    document.title = '分布式博客';
+    userTitleStore.setTitle(to.meta.title);
   }
 });
 

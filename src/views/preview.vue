@@ -41,50 +41,48 @@
               {{ article.clickCount }}
             </el-text>
           </div>
-          <el-button v-if="article.isAuthor" class="editBtn" type="primary" text @click="edit">编辑</el-button>
+          <el-button v-if="article.isAuthor" class="editBtn" type="primary" text @click="edit">编辑 </el-button>
         </div>
       </div>
       <v-md-preview ref="previewRef" :text="article.content"></v-md-preview>
     </el-main>
     <el-aside width="300px" class="aside-container right">
-        <el-card shadow="never">
-            <template #header>作者</template>
-            <div class="author-info" @click="openUser(article.authorId)">
-                <el-avatar :size="45" :src="pictureUrl + author.picId" class="centered-item avatar"/>
-                <div class="author-nick-name">{{ author.nickName }}</div>
+      <el-card shadow="never">
+        <template #header>作者</template>
+        <div class="author-info" @click="openUser(article.authorId)">
+          <el-avatar :size="45" :src="pictureUrl + author.picId" class="centered-item avatar" />
+          <div class="author-nick-name">{{ author.nickName }}</div>
+        </div>
+        <div class="article-info">
+          <el-statistic title="文章数" :value="author.articleCount" />
+          <el-statistic title="阅读数" :value="author.clickCount" />
+          <el-statistic title="点赞数" :value="author.likeCount" />
+        </div>
+      </el-card>
+      <el-card shadow="never" class="directory-card">
+        <template #header>目录</template>
+        <div ref="directoryRef" class="directory-div">
+          <div v-for="anchor in titles" :id="anchor.id" :key="anchor" :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" @click="directoryClick(anchor)">
+            <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
+              {{ anchor.title }}
             </div>
-            <div class="article-info">
-                <el-statistic title="文章数" :value="author.articleCount"/>
-                <el-statistic title="阅读数" :value="author.clickCount"/>
-                <el-statistic title="点赞数" :value="author.likeCount"/>
-            </div>
-        </el-card>
-        <el-card shadow="never" class="directory-card">
-            <template #header>目录</template>
-            <div ref="directoryRef" class="directory-div">
-                <div v-for="anchor in titles" :id="anchor.id" :key="anchor"
-                     :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }"
-                     @click="directoryClick(anchor)">
-                    <div class="directory-item"
-                         :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
-                        {{ anchor.title }}
-                    </div>
-                </div>
-            </div>
-        </el-card>
+          </div>
+        </div>
+      </el-card>
     </el-aside>
     <CommentList ref="commentRef" @refresh-comment-count="refreshCommentCount"></CommentList>
     <FavoriteForm ref="favoriteRef" @refresh-collect="refreshCollect"></FavoriteForm>
   </el-container>
 </template>
 <script setup>
-import {nextTick, onMounted, reactive, ref} from 'vue';
+import { nextTick, onMounted, reactive, ref } from 'vue';
 import request from '@/utils/request.js';
-import {useRoute, useRouter} from 'vue-router';
-import {ElMessage} from 'element-plus';
-import {debounce} from '@/utils/debounce.js';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { debounce } from '@/utils/debounce.js';
 import CommentList from '@/components/comment/CommentList.vue';
 import FavoriteForm from '@/components/favorite/FavoriteForm.vue';
+import { useTitleStore } from '@/store/modules/title.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -111,6 +109,8 @@ const getArticle = () => {
         return;
       }
       Object.assign(article, result.data);
+      //设置Title
+      useTitleStore().setTitle(article.title);
       nextTick(() => {
         //成功获取到文章内容，调用接口查询作者信息
         request.get('/user/getUserInfo', { params: { id: article.authorId } }).then((result) => {
@@ -259,19 +259,19 @@ const openUser = (id) => {
 
 <style>
 .el-card__body {
-    padding: 10px;
+  padding: 10px;
 }
 </style>
 <style scoped>
 .el-container {
-    display: flex;
-    align-items: stretch;
+  display: flex;
+  align-items: stretch;
 }
 
 .main-container {
-    border-radius: 5px;
-    height: calc(100vh - 100px);
-    flex: 1;
+  border-radius: 5px;
+  height: calc(100vh - 100px);
+  flex: 1;
   padding: 0;
   background-color: #fff;
   text-align: left;
@@ -323,34 +323,34 @@ const openUser = (id) => {
 }
 
 .article-info {
-    width: 100%;
-    display: flex;
-    margin-top: 10px;
+  width: 100%;
+  display: flex;
+  margin-top: 10px;
 }
 
 .article-info > * {
-    text-align: center;
-    flex: 3;
+  text-align: center;
+  flex: 3;
 }
 
 .author-nick-name {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .directory-card {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .directory-div {
-    width: 100%;
-    background-color: #fff;
-    border-radius: 5px;
-    height: calc(100vh - 450px);
-    text-align: left;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-top: 5px;
-    font-size: 14px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 5px;
+  height: calc(100vh - 450px);
+  text-align: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 5px;
+  font-size: 14px;
 }
 
 .directory-item {
@@ -395,10 +395,10 @@ const openUser = (id) => {
 }
 
 .el-drawer__header {
-    margin-bottom: 0px !important;
+  margin-bottom: 0px !important;
 }
 
 .editBtn {
-    margin-left: auto;
+  margin-left: auto;
 }
 </style>
