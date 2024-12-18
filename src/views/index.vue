@@ -16,9 +16,9 @@
           </el-input>
         </el-col>
         <el-col :span="4" class="header-right">
-          <el-button v-if="user === null" type="primary" plain @click="openLoginForm">登录/注册 </el-button>
+          <el-button v-if="user === null" type="primary" plain @click="openLoginForm">登录/注册</el-button>
           <div v-else class="centered-container">
-            <el-button type="primary" :icon="Edit" class="centered-item creation" @click="openEditor">写文章</el-button>
+            <el-button type="primary" :icon="Edit" class="centered-item creation" @click="openEditor"> 写文章 </el-button>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 <el-icon size="28" class="centered-item" style="color: gray">
@@ -61,24 +61,42 @@
                 <el-avatar :size="40" :src="pictureUrl + user.picId" class="centered-item avatar" />
               </span>
               <template #dropdown>
-                <el-card class="userCard">
-                  <el-row>
+                <div class="userCard">
+                  <el-row :gutter="20">
                     <el-col :span="6">
-                      <el-avatar :size="40" :src="pictureUrl + user.picId" class="centered-item avatar" />
+                      <el-avatar :size="45" :src="pictureUrl + user.picId" class="centered-item avatar" />
                     </el-col>
-                    <el-col :span="18" style="display: flex; justify-content: center; align-items: center; font-weight: bold">
-                      {{ user.nickName }}
+                    <el-col :span="18">
+                      <div style="font-size: 15px">{{ user.nickName }}</div>
+                      <div style="margin-top: 5px">硬币：32k</div>
                     </el-col>
                   </el-row>
                   <el-row>
-                    <el-col :span="12">
-                      <el-button text @click="openUser(user.id)">个人主页</el-button>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-button text @click="logout">退出登录</el-button>
+                    <el-col :span="24" class="levelLineDiv">
+                      <div style="display: flex">
+                        <div style="margin-right: auto; font-weight: bold">LEVEL.3</div>
+                        <div style="margin-left: auto">809 / 2000</div>
+                      </div>
+                      <div>
+                        <el-progress :percentage="50" :show-text="false"></el-progress>
+                      </div>
                     </el-col>
                   </el-row>
-                </el-card>
+                  <el-row style="text-align: center">
+                    <el-col :span="12">
+                      <el-button text @click="openUser(user.id)">我的主页</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-button text>我的设置</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-button text>我的足迹</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-button text type="danger" @click="logout">退出登录</el-button>
+                    </el-col>
+                  </el-row>
+                </div>
               </template>
             </el-dropdown>
           </div>
@@ -216,6 +234,12 @@ const openUser = (id) => {
 };
 </script>
 
+<style>
+.el-progress-bar__outer {
+  background-color: #b6d0ff;
+}
+</style>
+
 <style scoped>
 .header {
   position: fixed;
@@ -303,7 +327,12 @@ a {
 }
 
 .userCard {
+  margin: 20px;
   width: 200px;
+}
+
+.userCard > div {
+  margin-bottom: 10px;
 }
 
 .message-icon:hover {
@@ -318,7 +347,6 @@ a {
 .message-card-item {
   font-size: 16px;
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   min-height: 40px;
   cursor: pointer;
@@ -333,5 +361,20 @@ a {
 
 .message-card-badge {
   margin: 0 10px 0 auto;
+}
+
+.levelLineDiv {
+  padding: 0 10px;
+  background: #eaf2ff;
+  border-radius: 5px;
+}
+
+.levelLineDiv > div {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.levelLineDiv:first-child {
+  margin-bottom: 0;
 }
 </style>
