@@ -108,17 +108,14 @@ const getArticle = () => {
         router.push('/home');
         return;
       }
+      //赋值文章和作者数据
       Object.assign(article, result.data);
+      Object.assign(author, article.authorInfo);
       //设置Title
       useTitleStore().setTitle(article.title);
-      nextTick(() => {
-        //成功获取到文章内容，调用接口查询作者信息
-        request.get('/user/getUserInfo', { params: { id: article.authorId } }).then((result) => {
-          Object.assign(author, result.data);
-        });
-        directoryInit();
-        loading.value = false;
-      });
+      //初始化目录
+      nextTick(() => {directoryInit()})
+      loading.value = false;
     });
   }
 };
@@ -184,7 +181,7 @@ const scrollEventListener = debounce(() => {
     directoryRef.value.scrollTop = (directoryRef.value.scrollHeight * title.pixel) / articleRef.value.$el.scrollHeight;
     highlight(title.id);
   }
-},100);
+}, 100);
 
 const articleRef = ref(null);
 const directoryRef = ref(null);
