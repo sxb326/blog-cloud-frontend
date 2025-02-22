@@ -62,8 +62,8 @@
       <el-card shadow="never" class="directory-card">
         <template #header>目录</template>
         <div ref="directoryRef" class="directory-div">
-          <div v-for="anchor in titles" :id="anchor.id" :key="anchor" :style="{ 'border-left': directoryId === anchor.id ? '2px solid #007BFF' : 'none' }" @click="directoryClick(anchor)">
-            <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px`, color: directoryId === anchor.id ? '#409eff' : 'black' }">
+          <div v-for="anchor in titles" :id="anchor.id" :key="anchor" @click="directoryClick(anchor)">
+            <div class="directory-item" :style="{ padding: `5px 0 5px ${anchor.indent * 20}px` }">
               {{ anchor.title }}
             </div>
           </div>
@@ -141,33 +141,38 @@ const directoryInit = () => {
     indent: hTags.indexOf(el.tagName),
     pixel: el.getBoundingClientRect().top - 60,
   }));
+  //添加文章区域的滚动事件监听
+  articleRef.value.$el.addEventListener('scroll', scrollEventListener);
 };
-
-let directoryId = ref('');
 
 //目录点击事件
 const directoryClick = (anchor) => {
-  const { lineIndex } = anchor;
+  const { id, lineIndex } = anchor;
   const heading = previewRef.value.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
   if (heading) {
-    removeScrollEventListener();
-    directoryId.value = anchor.id;
+    //跳转到对应的位置
     previewRef.value.scrollToTarget({
       target: heading,
       scrollContainer: document.querySelector('.main-container'),
       top: 60,
     });
-    setTimeout(() => {
-      addScrollEventListener();
-    }, 200);
+    //高亮对应标题
+    highlight(id);
   }
 };
 
-const articleRef = ref(null);
-const directoryRef = ref(null);
+//根据传入的dom元素id 高亮对应标题
+const highlight = (id) => {
+  //首先移除所有的高亮
+  directoryRef.value.querySelectorAll('div.highlight').forEach((element) => {
+    element.classList.remove('highlight');
+  });
+  //再将目标元素高亮
+  directoryRef.value.querySelector(`div[id="${id}"]`).classList.add('highlight');
+};
 
 //滚动事件监听
-const scrollEventListener = () => {
+const scrollEventListener = debounce(() => {
   let pixel = articleRef.value.$el.scrollTop + articleRef.value.$el.offsetTop + 1;
   const title = titles.value.reduce((prev, curr) => {
     if (curr.pixel <= pixel && (prev === null || pixel - curr.pixel < pixel - prev.pixel)) {
@@ -177,23 +182,15 @@ const scrollEventListener = () => {
   }, null);
   if (title) {
     directoryRef.value.scrollTop = (directoryRef.value.scrollHeight * title.pixel) / articleRef.value.$el.scrollHeight;
-    directoryId.value = title.id;
+    highlight(title.id);
   }
-};
+},100);
 
-//注册滚动事件
-const addScrollEventListener = () => {
-  articleRef.value.$el.addEventListener('scroll', scrollEventListener);
-};
-
-//销毁滚动事件
-const removeScrollEventListener = () => {
-  articleRef.value.$el.removeEventListener('scroll', scrollEventListener);
-};
+const articleRef = ref(null);
+const directoryRef = ref(null);
 
 onMounted(() => {
   getArticle();
-  addScrollEventListener();
 });
 
 const like = (liked) => {
@@ -400,5 +397,10 @@ const openUser = (id) => {
 
 .editBtn {
   margin-left: auto;
+}
+
+.highlight {
+  color: #409eff;
+  border-left: 2px solid #007bff;
 }
 </style>
