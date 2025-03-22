@@ -137,7 +137,7 @@ const getArticle = () => {
     if (id) {
         loading.value = true
         request.get('/article/' + id).then(result => {
-            if (result.code === '302') {
+            if (result.code === '403') {
                 ElMessage({
                     message: result.message,
                     type: 'warning',

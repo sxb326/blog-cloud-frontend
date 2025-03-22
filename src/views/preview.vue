@@ -100,7 +100,7 @@ const getArticle = () => {
   if (id) {
     loading.value = true;
     request.get('/article/preview/' + id).then((result) => {
-      if (result.code === '302') {
+      if (result.code === '404') {
         ElMessage({
           message: result.message,
           type: 'warning',

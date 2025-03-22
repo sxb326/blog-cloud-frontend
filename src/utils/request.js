@@ -27,37 +27,33 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-    (response) => {
-        //如果响应头中有token，保存到localStorage中
-        const headers = response.headers;
-        let token = headers["token"];
-        if (token) {
-            localStorage.set("BLOG_TOKEN", token);
-        }
-        let data = response.data;
-        //接口未登录
-        if (data.code === '999') {
-          ElMessage({
-            message: data.message,
-            type: 'warning',
-          });
-          //弹出登录表单
-          useAuthStore().toggleLoginForm();
-          return;
-        }
-        //接口报错
-        if (data.code === '500') {
-          ElMessage({
-            message: data.message,
-            type: 'error',
-          });
-          return;
-        }
-        return response.data;
-    },
-    (error) => {
-        console.log("请求异常：", error);
+  (response) => {
+    //如果响应头中有token，保存到localStorage中
+    const headers = response.headers;
+    let token = headers['token'];
+    if (token) {
+      localStorage.set('BLOG_TOKEN', token);
     }
+    let { code, message } = response.data;
+    //接口未登录
+    if (code === '401') {
+      //弹出登录表单
+      useAuthStore().toggleLoginForm();
+      return;
+    }
+    //接口报错
+    if (code === '500') {
+      ElMessage({
+        message: message,
+        type: 'error',
+      });
+      return;
+    }
+    return response.data;
+  },
+  (error) => {
+    console.log('请求异常：', error);
+  },
 );
 
 // 导出实例
