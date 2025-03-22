@@ -117,7 +117,6 @@ import { ElMessage } from 'element-plus';
 import { Edit, Search } from '@element-plus/icons-vue';
 import { computed, getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 import { localStorage } from '@/utils/storage';
-import request from '@/utils/request.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/modules/auth.js';
 
@@ -216,9 +215,7 @@ const logout = () => {
 };
 
 const openEditor = () => {
-  request.get('/article/id').then((result) => {
-    window.open(window.location.origin + '/#/editor/' + result.data);
-  });
+  window.open(window.location.origin + '/#/editor');
 };
 
 const refreshPage = () => {
