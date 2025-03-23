@@ -96,8 +96,8 @@ let titles = ref([]);
 //根据路径参数中的id 调用后端接口获取博客内容
 const getArticle = () => {
   let id = route.params.id;
-  article.id = id;
   if (id) {
+    article.id = id;
     loading.value = true;
     request.get('/article/preview/' + id).then((result) => {
       if (result.code === '404') {
@@ -114,7 +114,9 @@ const getArticle = () => {
       //设置Title
       useTitleStore().setTitle(article.title);
       //初始化目录
-      nextTick(() => {directoryInit()})
+      nextTick(() => {
+        directoryInit();
+      });
       loading.value = false;
     });
   }
@@ -140,6 +142,14 @@ const directoryInit = () => {
   }));
   //添加文章区域的滚动事件监听
   articleRef.value.$el.addEventListener('scroll', scrollEventListener);
+  //解析地址栏中可能存在的目录domid
+  nextTick(() => {
+    let hash = window.location.hash.substring(1);
+    if (hash.indexOf('#') > -1) {
+      let id = hash.split('#')[1];
+      directoryRef.value.querySelector(`div[id="${id}"]`).click();
+    }
+  });
 };
 
 //目录点击事件
@@ -166,6 +176,8 @@ const highlight = (id) => {
   });
   //再将目标元素高亮
   directoryRef.value.querySelector(`div[id="${id}"]`).classList.add('highlight');
+  //修改地址栏 拼接 # domId
+  window.location.href = `${window.location.origin}/#/preview/${article.id}#${id}`;
 };
 
 //滚动事件监听
