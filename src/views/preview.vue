@@ -161,7 +161,7 @@ const directoryClick = (anchor) => {
     previewRef.value.scrollToTarget({
       target: heading,
       scrollContainer: document.querySelector('.main-container'),
-      top: 60,
+      top: 10,
     });
     //高亮对应标题
     highlight(id);
