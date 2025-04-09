@@ -1,22 +1,28 @@
 <template>
-  <div id="app">
+  <!-- 带有顶部栏的框架页 -->
+  <div class="main-layout">
+    <!-- 顶部栏 -->
     <el-header class="header" style="background-color: #fff">
       <el-row class="header-row" justify="space-between" align="middle">
+        <!-- logo -->
         <el-col :span="5" class="header-logo">
           <h3>分布式博客系统</h3>
         </el-col>
+        <!-- 顶部栏菜单 -->
         <el-col :span="9" class="header-nav">
           <router-link to="/home" class="menuItem">首页</router-link>
         </el-col>
+        <!-- 搜索输入框 -->
         <el-col :span="6">
-          <el-input v-model="keyWord" style="width: 240px" placeholder="想搜索点什么呢">
+          <el-input v-model="keyword" style="width: 240px" placeholder="想搜索点什么呢">
             <template #append>
               <el-button :icon="Search" @click="doSearch" />
             </template>
           </el-input>
         </el-col>
+        <!-- 登录注册/用户头像部分 -->
         <el-col :span="4" class="header-right">
-          <el-button v-if="user === null" type="primary" plain @click="openLoginForm">登录/注册</el-button>
+          <el-button v-if="user === null" type="primary" plain @click="loginFormRef?.open()">登录/注册</el-button>
           <div v-else class="centered-container">
             <el-button type="primary" :icon="Edit" class="centered-item creation" @click="openEditor"> 写文章 </el-button>
             <el-dropdown trigger="click">
@@ -93,7 +99,7 @@
                       <el-button text>我的足迹</el-button>
                     </el-col>
                     <el-col :span="12">
-                      <el-button text type="danger" @click="logout">退出登录</el-button>
+                      <el-button text type="danger" @click="doLogout">退出登录</el-button>
                     </el-col>
                   </el-row>
                 </div>
@@ -103,57 +109,77 @@
         </el-col>
       </el-row>
     </el-header>
+    <!-- 切换顶部栏菜单时的router-view -->
     <el-container>
       <el-main>
         <router-view class="custom-main-container" />
       </el-main>
     </el-container>
   </div>
-  <loginForm ref="loginFormRef" @refresh-page="refreshPage()"></loginForm>
+  <!-- 登录表单 -->
+  <loginForm ref="loginFormRef" @refresh="loginSuccess()"></loginForm>
 </template>
 
 <script setup>
 import { ElMessage } from 'element-plus';
 import { Edit, Search } from '@element-plus/icons-vue';
-import { computed, getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
+import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 import { localStorage } from '@/utils/storage';
 import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/store/modules/auth.js';
+import { useAuthStore } from '@/store/modules/auth';
+import { storeToRefs } from 'pinia';
 
 const { proxy } = getCurrentInstance();
 
-onMounted(getAuthUser);
+onMounted(() => {
+  getAuthUser();
+});
 
-const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
-
-//获取登录用户头像id
-let user = computed(() => useAuthStore().authUser);
-
-//获取当前登录用户
+// 获取当前登录用户
 async function getAuthUser() {
   const response = await proxy.$api.auth.getAuthUser();
   if (response.data) {
+    // 设置当前AuthUser
     useAuthStore().setAuthUser(response.data);
+    // 创建WebSocket连接 准备接收消息推送
     createWebSocketConnection();
   } else {
+    // 清除当前AuthUser
     useAuthStore().clearAuthUser();
+    // 清除本地保存的token
     localStorage.remove('BLOG_TOKEN');
   }
 }
 
-//登录窗口
-const showLoginForm = computed(() => useAuthStore().loginFormStatus);
-watch(showLoginForm, () => {
-  openLoginForm();
-});
+const { showLoginForm, authUser: user } = storeToRefs(useAuthStore());
+const pictureUrl = ref(import.meta.env.VITE_APP_SERVICE_API + '/picture/');
+
+// 登录表单
 const loginFormRef = ref();
 
-const openLoginForm = () => {
-  loginFormRef.value.open();
+// watch 监视 pinia 中 showLoginForm
+watch(showLoginForm, () => {
+  if (showLoginForm.value === true) {
+    loginFormRef.value.open();
+  }
+});
+
+// 登录成功回调 获取AuthUser
+const loginSuccess = () => {
+  getAuthUser();
 };
 
-// 搜索
-let keyWord = ref('');
+//退出登录
+const doLogout = () => {
+  // 清除pinia中的 AuthUser 数据
+  useAuthStore().clearAuthUser();
+  // 清除本地保存的token
+  localStorage.remove('BLOG_TOKEN');
+  ElMessage({ message: '注销成功', type: 'success' });
+};
+
+// 搜索关键字
+let keyword = ref('');
 
 const route = useRoute();
 const router = useRouter();
@@ -161,10 +187,32 @@ const router = useRouter();
 onMounted(() => {
   //检查检索关键字
   if (route.params.keyword) {
-    keyWord.value = route.params.keyword;
+    keyword.value = route.params.keyword;
   }
 });
 
+// 进行搜索
+function doSearch() {
+  const searchKeyword = keyword.value?.trim();
+
+  if (!searchKeyword) {
+    ElMessage({ message: '搜索关键字不能为空', type: 'warning' });
+    return;
+  }
+
+  const timestamp = Date.now();
+  const searchPath = `/search/${encodeURIComponent(searchKeyword)}?timestamp=${timestamp}`;
+
+  if (route.path.startsWith('/search')) {
+    router.push(searchPath);
+  } else {
+    const newWindow = window.open('', '_blank');
+    const baseUrl = window.location.origin + (import.meta.env.BASE_URL || '/');
+    newWindow.location.href = `${baseUrl}#${searchPath}`;
+  }
+}
+
+// 消息
 let messageCount = reactive({
   totalCount: 0,
   likeCount: 0,
@@ -175,6 +223,7 @@ let messageCount = reactive({
   noticeCount: 0,
 });
 
+// 全双工 待优化
 const createWebSocketConnection = () => {
   let websocket = new WebSocket(import.meta.env.VITE_APP_SERVICE_API + '/message/websocket/' + user.value.id);
 
@@ -186,40 +235,8 @@ const createWebSocketConnection = () => {
   websocket.onerror = function () {};
 };
 
-function doSearch() {
-  if (keyWord.value) {
-    let path = route.path;
-    let time = new Date().getTime();
-    if (path.startsWith('/search')) {
-      router.push('/search/' + keyWord.value + '?timestamp=' + time);
-    } else {
-      window.open(window.location.origin + '/#/search/' + keyWord.value);
-    }
-  } else {
-    ElMessage({
-      message: '检索关键字不能为空',
-      type: 'warning',
-    });
-  }
-}
-
-//注销
-const logout = () => {
-  useAuthStore().clearAuthUser();
-  localStorage.remove('BLOG_TOKEN');
-  ElMessage({
-    message: '注销成功',
-    type: 'success',
-  });
-  refreshPage();
-};
-
 const openEditor = () => {
   window.open(window.location.origin + '/#/editor');
-};
-
-const refreshPage = () => {
-  window.location.reload();
 };
 
 const openMessage = (type) => {
@@ -238,6 +255,10 @@ const openUser = (id) => {
 </style>
 
 <style scoped>
+.main-layout {
+  padding-top: 30px;
+}
+
 .header {
   position: fixed;
   top: 0;
@@ -275,10 +296,6 @@ const openUser = (id) => {
 .search-input {
   width: 150px;
   margin-right: 10px;
-}
-
-#app {
-  padding-top: 30px;
 }
 
 .menuItem {

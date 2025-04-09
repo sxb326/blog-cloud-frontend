@@ -2,12 +2,12 @@ import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    loginFormStatus: false,
+    showLoginForm: false,
     authUser: null,
   }),
   actions: {
     toggleLoginForm() {
-      this.loginFormStatus = !this.loginFormStatus;
+      this.showLoginForm = !this.showLoginForm;
     },
     setAuthUser(authUser) {
       this.authUser = authUser;

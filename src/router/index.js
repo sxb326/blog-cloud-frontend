@@ -6,7 +6,7 @@ import { useTitleStore } from '@/store/modules/title.js';
 export const constantRoutes = [
   {
     path: '/',
-    component: () => import('@/views/index.vue'),
+    component: () => import('@/views/MainLayout.vue'),
     redirect: '/home',
     children: [
       { path: '/home', component: () => import('@/views/home.vue'), meta: { title: '首页' } },
@@ -16,7 +16,7 @@ export const constantRoutes = [
       },
       {
         path: '/search/:keyword',
-        component: () => import('@/views/search.vue'),
+        component: () => import('@/views/Search.vue'),
       },
       {
         path: '/message',
