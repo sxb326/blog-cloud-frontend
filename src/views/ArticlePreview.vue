@@ -23,7 +23,7 @@
         </div>
       </el-badge>
     </el-aside>
-    <el-main ref="articleRef" class="main-container">
+    <el-main id="articleDiv" ref="articleRef" class="main-container">
       <div class="title">
         <h1 style="font-size: 2.1em">{{ article.title }}</h1>
         <div class="article-stats">
@@ -44,6 +44,7 @@
         </div>
       </div>
       <v-md-preview ref="previewRef" :text="article.content"></v-md-preview>
+      <el-backtop target="#articleDiv" :right="580" :bottom="20" />
     </el-main>
     <el-aside width="300px" class="aside-container right">
       <el-card shadow="never">
@@ -179,10 +180,12 @@ const highlight = (id) => {
   directoryRef.value.querySelectorAll('div.highlight').forEach((element) => {
     element.classList.remove('highlight');
   });
-  //再将目标元素高亮
-  directoryRef.value.querySelector(`div[id="${id}"]`).classList.add('highlight');
+  if (id) {
+    //将目标元素高亮
+    directoryRef.value.querySelector(`div[id="${id}"]`).classList.add('highlight');
+  }
   //修改地址栏 拼接 # domId
-  window.location.href = `${window.location.origin}/preview/${article.id}#${id}`;
+  window.location.href = `${window.location.origin}/preview/${article.id}#${id ? id : ''}`;
 };
 
 //滚动事件监听
@@ -194,10 +197,8 @@ const scrollEventListener = debounce(() => {
     }
     return prev;
   }, null);
-  if (title) {
-    directoryRef.value.scrollTop = (directoryRef.value.scrollHeight * title.pixel) / articleRef.value.$el.scrollHeight;
-    highlight(title.id);
-  }
+  directoryRef.value.scrollTop = title ? (directoryRef.value.scrollHeight * title.pixel) / articleRef.value.$el.scrollHeight : 0;
+  highlight(title ? title.id : null);
 }, 100);
 
 // 点赞文章
