@@ -96,7 +96,7 @@ const tabChange = (tabName) => {
 
 const chat = () => {
   request.post('/message/conversation/save', { receiveUserId: userId }).then((result) => {
-    window.open(window.location.origin + '/#/message/chat?id=' + result.data);
+    window.open(window.location.origin + '/message/chat?id=' + result.data);
   });
 };
 

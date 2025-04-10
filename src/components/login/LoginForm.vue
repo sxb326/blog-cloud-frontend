@@ -19,6 +19,7 @@
 import { reactive, ref } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
+import { useAuthStore } from '@/store/modules/auth';
 
 // 对外提供open方法 由父组件控制表单显隐
 const visible = ref(false);
@@ -71,6 +72,7 @@ const close = () => {
   form.username = '';
   form.password = '';
   visible.value = false;
+  useAuthStore().showLoginForm = false;
 };
 </script>
 

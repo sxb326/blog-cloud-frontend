@@ -227,7 +227,7 @@ const refreshComment = () => {
 };
 
 const openUser = (id) => {
-  window.open(window.location.origin + '/#/user/' + id);
+  window.open(window.location.origin + '/user/' + id);
 };
 
 defineExpose({

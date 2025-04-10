@@ -117,7 +117,7 @@
     </el-container>
   </div>
   <!-- 登录表单 -->
-  <loginForm ref="loginFormRef" @refresh="loginSuccess()"></loginForm>
+  <loginForm ref="loginFormRef" @refresh="refreshPage()"></loginForm>
 </template>
 
 <script setup>
@@ -164,11 +164,6 @@ watch(showLoginForm, () => {
   }
 });
 
-// 登录成功回调 获取AuthUser
-const loginSuccess = () => {
-  getAuthUser();
-};
-
 //退出登录
 const doLogout = () => {
   // 清除pinia中的 AuthUser 数据
@@ -176,13 +171,19 @@ const doLogout = () => {
   // 清除本地保存的token
   localStorage.remove('BLOG_TOKEN');
   ElMessage({ message: '注销成功', type: 'success' });
+  refreshPage();
 };
 
-// 搜索关键字
-let keyword = ref('');
+// 刷新页面 因为登录状态改变了 所以这里就暂时用直接使用 reload() 方法
+const refreshPage = () => {
+  window.location.reload();
+};
 
 const route = useRoute();
 const router = useRouter();
+
+// 搜索关键字
+let keyword = ref('');
 
 onMounted(() => {
   //检查检索关键字
@@ -207,8 +208,8 @@ function doSearch() {
     router.push(searchPath);
   } else {
     const newWindow = window.open('', '_blank');
-    const baseUrl = window.location.origin + (import.meta.env.BASE_URL || '/');
-    newWindow.location.href = `${baseUrl}#${searchPath}`;
+    const baseUrl = window.location.origin;
+    newWindow.location.href = `${baseUrl}${searchPath}`;
   }
 }
 
@@ -236,15 +237,15 @@ const createWebSocketConnection = () => {
 };
 
 const openEditor = () => {
-  window.open(window.location.origin + '/#/editor');
+  window.open(window.location.origin + '/editor');
 };
 
 const openMessage = (type) => {
-  window.open(window.location.origin + '/#/message/' + type);
+  window.open(window.location.origin + '/message/' + type);
 };
 
 const openUser = (id) => {
-  window.open(window.location.origin + '/#/user/' + id);
+  window.open(window.location.origin + '/user/' + id);
 };
 </script>
 

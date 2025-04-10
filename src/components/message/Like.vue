@@ -61,11 +61,11 @@ const getList = () => {
 };
 
 const jumpToPreview = (articleId) => {
-    window.open(window.location.origin + "/#/preview/" + articleId);
+    window.open(window.location.origin + "/preview/" + articleId);
 }
 
 const openUser = (id) => {
-    window.open(window.location.origin + "/#/user/" + id);
+    window.open(window.location.origin + "/user/" + id);
 }
 
 

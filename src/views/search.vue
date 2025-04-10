@@ -98,7 +98,7 @@ const getList = () => {
 };
 
 const preview = (id) => {
-  window.open(window.location.origin + '/#/preview/' + id);
+  window.open(window.location.origin + '/preview/' + id);
 };
 
 //重新发起检索
@@ -115,7 +115,7 @@ onBeforeRouteUpdate((route) => {
 });
 
 const openUser = (id) => {
-  window.open(window.location.origin + '/#/user/' + id);
+  window.open(window.location.origin + '/user/' + id);
 };
 
 onMounted(() => {

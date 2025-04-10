@@ -99,7 +99,7 @@ const load = () => {
 onMounted(getList);
 
 const preview = (id) => {
-  window.open(window.location.origin + '/#/preview/' + id);
+  window.open(window.location.origin + '/preview/' + id);
 };
 </script>
 

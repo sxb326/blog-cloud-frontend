@@ -100,7 +100,8 @@ const load = () => {
 onMounted(getList);
 
 const preview = (id) => {
-  window.open(window.location.origin + "/#/preview/" + id);
+  console.log('window.location.origin',window.location.origin)
+  window.open(window.location.origin + "/preview/" + id);
 };
 
 const refreshArticleListByCategoryId = (categoryId) => {
@@ -112,7 +113,7 @@ const refreshArticleListByCategoryId = (categoryId) => {
 };
 
 const openUser = (id) => {
-  window.open(window.location.origin + "/#/user/" + id);
+  window.open(window.location.origin + "/user/" + id);
 }
 
 defineExpose({ refreshArticleListByCategoryId });

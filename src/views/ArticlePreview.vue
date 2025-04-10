@@ -41,7 +41,6 @@
               {{ article.clickCount }}
             </el-text>
           </div>
-          <el-button v-if="article.isAuthor" class="editBtn" type="primary" text @click="edit">编辑 </el-button>
         </div>
       </div>
       <v-md-preview ref="previewRef" :text="article.content"></v-md-preview>
@@ -92,6 +91,13 @@ let article = reactive({});
 let author = reactive({});
 let loading = ref(false);
 let titles = ref([]);
+
+const articleRef = ref(null);
+const directoryRef = ref(null);
+
+onMounted(() => {
+  getArticle();
+});
 
 //根据路径参数中的id 调用后端接口获取博客内容
 const getArticle = () => {
@@ -145,9 +151,8 @@ const directoryInit = () => {
   //解析地址栏中可能存在的目录domid
   nextTick(() => {
     let hash = window.location.hash.substring(1);
-    if (hash.indexOf('#') > -1) {
-      let id = hash.split('#')[1];
-      directoryRef.value.querySelector(`div[id="${id}"]`).click();
+    if (hash) {
+      directoryRef.value.querySelector(`div[id="${hash}"]`).click();
     }
   });
 };
@@ -177,7 +182,7 @@ const highlight = (id) => {
   //再将目标元素高亮
   directoryRef.value.querySelector(`div[id="${id}"]`).classList.add('highlight');
   //修改地址栏 拼接 # domId
-  window.location.href = `${window.location.origin}/#/preview/${article.id}#${id}`;
+  window.location.href = `${window.location.origin}/preview/${article.id}#${id}`;
 };
 
 //滚动事件监听
@@ -195,14 +200,8 @@ const scrollEventListener = debounce(() => {
   }
 }, 100);
 
-const articleRef = ref(null);
-const directoryRef = ref(null);
-
-onMounted(() => {
-  getArticle();
-});
-
-const like = (liked) => {
+// 点赞文章
+const debounceLike = debounce((liked) => {
   const param = { type: 1, objId: article.id, status: !liked };
   request.post('/article/like/save', param).then((result) => {
     if (!result) {
@@ -215,11 +214,9 @@ const like = (liked) => {
     article.likeCount = result.data;
     article.liked = !liked;
   });
-};
+}, 200);
 
-const debounceLike = debounce(like, 200);
-
-//评论
+// 评论区
 const commentRef = ref(null);
 
 const openComment = (articleId) => {
@@ -253,13 +250,8 @@ const refreshCollect = () => {
   });
 };
 
-//编辑文章
-const edit = () => {
-  router.push('/editor/' + article.id);
-};
-
 const openUser = (id) => {
-  window.open(window.location.origin + '/#/user/' + id);
+  window.open(window.location.origin + '/user/' + id);
 };
 </script>
 

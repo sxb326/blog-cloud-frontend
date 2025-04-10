@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import request from '@/utils/request.js';
 import { useTitleStore } from '@/store/modules/title.js';
 
 // 本地静态路由
-export const constantRoutes = [
+const routes = [
   {
     path: '/',
     component: () => import('@/views/MainLayout.vue'),
@@ -12,7 +12,7 @@ export const constantRoutes = [
       { path: '/home', component: () => import('@/views/home.vue'), meta: { title: '首页' } },
       {
         path: '/preview/:id',
-        component: () => import('@/views/preview.vue'),
+        component: () => import('@/views/ArticlePreview.vue'),
       },
       {
         path: '/search/:keyword',
@@ -56,8 +56,8 @@ export const constantRoutes = [
 
 // 创建路由
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes: constantRoutes,
+  history: createWebHistory(),
+  routes: routes,
 });
 
 //前置路由守卫 主要用于未登录时，需要登录的页面禁止访问

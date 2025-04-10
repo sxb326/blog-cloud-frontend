@@ -110,7 +110,7 @@ const saveDraft = () => {
   }
   request.post('/article/draft/save', article).then((result) => {
     if (!article.id) {
-      window.location.href = `${window.location.origin}/#/editor/${result.data}`;
+      window.location.href = `${window.location.origin}/editor/${result.data}`;
     }
     article.id = result.data;
     ElMessage({
